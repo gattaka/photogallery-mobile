@@ -23,6 +23,8 @@ import com.codename1.ui.Toolbar;
 import com.codename1.ui.URLImage;
 import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.plaf.UIManager;
 
 /**
@@ -91,9 +93,11 @@ public class PhotogalleryMobile {
 
 				if (result != null) {
 
-					final Container galleryCont = new Container(BoxLayout.y());
+					final Container galleryCont = new Container(new FlowLayout(Component.CENTER));
 					galleryCont.setScrollableY(true);
-					galleryCont.addComponent(new SpanLabel((String) result.get("author")));
+					// galleryCont.addComponent(new SpanLabel((String)
+					// result.get("author")));
+					listForm.setTitle(String.valueOf(result.get("name")));
 
 					@SuppressWarnings("unchecked")
 					ArrayList<String> photos = (ArrayList<String>) result.get("files");
@@ -138,11 +142,15 @@ public class PhotogalleryMobile {
 		ConnectionRequest photoDetailRequest = new ConnectionRequest() {
 			protected void readResponse(java.io.InputStream input) throws IOException {
 
-				Image photoImage = URLImage.createImage(input);
-
 				Container photoCont = new Container(BoxLayout.y());
 				photoCont.setScrollableY(true);
 				photoCont.setScrollableX(true);
+
+				Image rawImage = URLImage.createImage(input);
+				// TODO 10 by se mìlo brát dle paddingu
+				Image photoImage = rawImage.scaledSmallerRatio(listForm.getWidth() - 10, listForm.getHeight() - 10);
+				
+				listForm.setTitle(photo);
 
 				// Zasekne celý prùbìh, pokud je photoImage "moc" velké
 				// ImageViewer photoViewer = new ImageViewer(photoImage);
