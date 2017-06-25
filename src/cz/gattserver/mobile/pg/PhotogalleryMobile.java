@@ -1,9 +1,18 @@
 package cz.gattserver.mobile.pg;
 
+import java.io.IOException;
+
+import com.codename1.components.ImageViewer;
+import com.codename1.components.InfiniteProgress;
+import com.codename1.io.ConnectionRequest;
+import com.codename1.io.NetworkManager;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
+import com.codename1.ui.Image;
 import com.codename1.ui.Toolbar;
+import com.codename1.ui.URLImage;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.plaf.UIManager;
 
 /**

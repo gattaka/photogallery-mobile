@@ -15,12 +15,12 @@ import com.codename1.ui.Image;
 import com.codename1.ui.URLImage;
 import com.codename1.ui.layouts.FlowLayout;
 
-public class PhotoGalleryDetailScreen extends AbstractScreen {
+public class PhotoGalleryDetailScreen extends SwitchableContainer {
 
 	private int galleryId;
 
 	public PhotoGalleryDetailScreen(int galleryId, String galleryNazev, SwitchableForm mainForm,
-			AbstractScreen prevScreen) {
+			SwitchableContainer prevScreen) {
 		super(galleryNazev, mainForm, prevScreen);
 		this.galleryId = galleryId;
 
@@ -79,7 +79,7 @@ public class PhotoGalleryDetailScreen extends AbstractScreen {
 	}
 
 	@Override
-	protected void refresh() {
+	public void refresh() {
 		removeAll();
 		init();
 	}

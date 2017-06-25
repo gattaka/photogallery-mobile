@@ -2,26 +2,25 @@ package cz.gattserver.mobile.pg;
 
 import java.io.IOException;
 
+import com.codename1.components.ImageViewer;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.io.ConnectionRequest;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.Image;
 import com.codename1.ui.URLImage;
-import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.BorderLayout;
 
-public class PhotoDetailScreen extends AbstractScreen {
+public class PhotoDetailScreen extends SwitchableContainer {
 
 	private int galleryId;
 	private String photo;
 
-	public PhotoDetailScreen(int galleryId, String photo, SwitchableForm mainForm, AbstractScreen prevScreen) {
+	public PhotoDetailScreen(int galleryId, String photo, SwitchableForm mainForm, SwitchableContainer prevScreen) {
 		super(photo, mainForm, prevScreen);
 		this.galleryId = galleryId;
 		this.photo = photo;
 
-		setLayout(BoxLayout.y());
-		setScrollableY(true);
-		setScrollableX(true);
+		setLayout(new BorderLayout());
 
 		init();
 	}
@@ -33,13 +32,15 @@ public class PhotoDetailScreen extends AbstractScreen {
 
 				Image rawImage = URLImage.createImage(input);
 				// TODO 10 by se mìlo brát dle paddingu
-				Image photoImage = rawImage.scaledSmallerRatio(mainForm.getWidth() - 10, mainForm.getHeight() - 10);
+				// Image photoImage =
+				// rawImage.scaledSmallerRatio(mainForm.getWidth() - 10,
+				// mainForm.getHeight() - 10);
+				// add(photoImage);
 
 				// Zasekne celý prùbìh, pokud je photoImage "moc" velké
-				// ImageViewer photoViewer = new ImageViewer(photoImage);
-				// photoCont.add(photoViewer);
+				ImageViewer photoViewer = new ImageViewer(rawImage);
+				add(BorderLayout.CENTER, photoViewer);
 
-				add(photoImage);
 			}
 		};
 		photoDetailRequest.setUrl("http://gattserver.cz/ws/pg/photo");
@@ -51,7 +52,7 @@ public class PhotoDetailScreen extends AbstractScreen {
 	}
 
 	@Override
-	protected void refresh() {
+	public void refresh() {
 		removeAll();
 		init();
 	}

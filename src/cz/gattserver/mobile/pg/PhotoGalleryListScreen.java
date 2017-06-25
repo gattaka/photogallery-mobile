@@ -12,9 +12,9 @@ import com.codename1.io.NetworkManager;
 import com.codename1.ui.Button;
 import com.codename1.ui.layouts.BoxLayout;
 
-public class PhotoGalleryListScreen extends AbstractScreen {
+public class PhotoGalleryListScreen extends SwitchableContainer {
 
-	public PhotoGalleryListScreen(SwitchableForm mainForm, AbstractScreen prevScreen) {
+	public PhotoGalleryListScreen(SwitchableForm mainForm, SwitchableContainer prevScreen) {
 		super("Pøehled fotogalerií", mainForm, prevScreen);
 
 		setLayout(BoxLayout.y());
@@ -53,7 +53,7 @@ public class PhotoGalleryListScreen extends AbstractScreen {
 	}
 
 	@Override
-	protected void refresh() {
+	public void refresh() {
 		removeAll();
 		init();
 	}
