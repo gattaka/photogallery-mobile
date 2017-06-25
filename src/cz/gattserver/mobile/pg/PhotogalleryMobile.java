@@ -1,30 +1,9 @@
 package cz.gattserver.mobile.pg;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Stack;
-
-import com.codename1.components.InfiniteProgress;
-import com.codename1.components.SpanLabel;
-import com.codename1.io.ConnectionRequest;
-import com.codename1.io.JSONParser;
-import com.codename1.io.NetworkManager;
-import com.codename1.ui.Button;
-import com.codename1.ui.Component;
-import com.codename1.ui.Container;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
-import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
-import com.codename1.ui.Image;
 import com.codename1.ui.Toolbar;
-import com.codename1.ui.URLImage;
-import com.codename1.ui.animations.MorphTransition;
-import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.FlowLayout;
-import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.plaf.UIManager;
 
 /**
@@ -35,8 +14,6 @@ public class PhotogalleryMobile {
 
 	private Form current;
 
-	private Stack<Component> views = new Stack<>();
-
 	// spouští se pouze pøi novém startu, jednou za program
 	public void init(Object context) {
 		UIManager.initFirstTheme("/theme");
@@ -45,151 +22,14 @@ public class PhotogalleryMobile {
 		Toolbar.setGlobalToolbar(true);
 	}
 
-	private void showGalleryList(final Form listForm) {
-		InfiniteProgress prog = new InfiniteProgress();
-		ConnectionRequest galleryListRequest = new ConnectionRequest() {
-			protected void readResponse(java.io.InputStream input) throws IOException {
-
-				JSONParser p = new JSONParser();
-				Map<String, Object> result = p.parseJSON(new InputStreamReader(input, "UTF-8"));
-
-				if (result != null && result.containsKey("root")) {
-
-					final Container listCont = new Container(BoxLayout.y());
-					listCont.setScrollableY(true);
-
-					@SuppressWarnings("unchecked")
-					ArrayList<Map<String, String>> list = (ArrayList<Map<String, String>>) result.get("root");
-					for (Map<String, String> gallery : list) {
-						String galleryNazev = gallery.get("name");
-						int galleryId = (int) Double.parseDouble(String.valueOf(gallery.get("id")));
-						Button button = new Button(galleryNazev);
-						button.addActionListener(e -> {
-							showGalleryDetail(listForm, listCont, galleryId, galleryNazev);
-						});
-						listCont.add(button);
-					}
-
-					listForm.add(listCont);
-					views.push(listCont);
-				}
-
-			}
-		};
-		galleryListRequest.setUrl("http://gattserver.cz/ws/pg/list");
-		galleryListRequest.setPost(false);
-		galleryListRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
-		NetworkManager.getInstance().addToQueueAndWait(galleryListRequest);
-	}
-
-	private void showGalleryDetail(final Form listForm, final Component prevComponent, final int galleryId,
-			final String galleryNazev) {
-		InfiniteProgress prog = new InfiniteProgress();
-		ConnectionRequest galleryRequest = new ConnectionRequest() {
-			protected void readResponse(java.io.InputStream input) throws IOException {
-
-				JSONParser p = new JSONParser();
-				Map<String, Object> result = p.parseJSON(new InputStreamReader(input, "UTF-8"));
-
-				if (result != null) {
-
-					final Container galleryCont = new Container(new FlowLayout(Component.CENTER));
-					galleryCont.setScrollableY(true);
-					// galleryCont.addComponent(new SpanLabel((String)
-					// result.get("author")));
-					listForm.setTitle(String.valueOf(result.get("name")));
-
-					@SuppressWarnings("unchecked")
-					ArrayList<String> photos = (ArrayList<String>) result.get("files");
-					for (String photo : photos) {
-						InfiniteProgress prog2 = new InfiniteProgress();
-						ConnectionRequest photoMiniRequest = new ConnectionRequest() {
-							protected void readResponse(java.io.InputStream photoMiniInput) throws IOException {
-
-								Image photoMiniImage = URLImage.createImage(photoMiniInput);
-								Button photoMiniButton = new Button(photoMiniImage);
-								galleryCont.add(photoMiniButton);
-
-								photoMiniButton.addActionListener(e -> {
-									showPhotoDetail(listForm, galleryCont, galleryId, photo);
-								});
-
-							}
-						};
-						photoMiniRequest.setUrl("http://gattserver.cz/ws/pg/mini");
-						photoMiniRequest.setPost(false);
-						photoMiniRequest.addArgument("id", String.valueOf(galleryId));
-						photoMiniRequest.addArgument("fileName", photo);
-						photoMiniRequest.setDisposeOnCompletion(prog2.showInifiniteBlocking());
-						NetworkManager.getInstance().addToQueue(photoMiniRequest);
-					}
-
-					listForm.replace(views.peek(), galleryCont, MorphTransition.create(100));
-					views.push(galleryCont);
-				}
-			};
-		};
-		galleryRequest.setUrl("http://gattserver.cz/ws/pg/gallery");
-		galleryRequest.setPost(false);
-		galleryRequest.addArgument("id", String.valueOf(galleryId));
-		galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
-		NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
-	}
-
-	private void showPhotoDetail(final Form listForm, final Component prevComponent, final int galleryId,
-			String photo) {
-		InfiniteProgress prog = new InfiniteProgress();
-		ConnectionRequest photoDetailRequest = new ConnectionRequest() {
-			protected void readResponse(java.io.InputStream input) throws IOException {
-
-				Container photoCont = new Container(BoxLayout.y());
-				photoCont.setScrollableY(true);
-				photoCont.setScrollableX(true);
-
-				Image rawImage = URLImage.createImage(input);
-				// TODO 10 by se mìlo brát dle paddingu
-				Image photoImage = rawImage.scaledSmallerRatio(listForm.getWidth() - 10, listForm.getHeight() - 10);
-				
-				listForm.setTitle(photo);
-
-				// Zasekne celý prùbìh, pokud je photoImage "moc" velké
-				// ImageViewer photoViewer = new ImageViewer(photoImage);
-				// photoCont.add(photoViewer);
-
-				photoCont.add(photoImage);
-
-				listForm.replace(views.peek(), photoCont, MorphTransition.create(100));
-				views.push(photoCont);
-			}
-		};
-		photoDetailRequest.setUrl("http://gattserver.cz/ws/pg/photo");
-		photoDetailRequest.setPost(false);
-		photoDetailRequest.addArgument("id", String.valueOf(galleryId));
-		photoDetailRequest.addArgument("fileName", photo);
-		photoDetailRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
-		NetworkManager.getInstance().addToQueue(photoDetailRequest);
-	}
-
 	// pøi nastartování nebo de-minimalizaci
 	public void start() {
 		if (current != null) {
 			current.show();
 			return;
 		}
-		Form listForm = new Form();
-		listForm.setTitle("Fotogalerie");
-		listForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, (e) -> {
-			if (views.size() > 1) {
-				Component current = views.pop();
-				listForm.replace(current, views.peek(), MorphTransition.create(100));
-			}
-		});
-		listForm.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, (e) -> {
-			views.clear();
-			listForm.removeAll();
-			showGalleryList(listForm);
-		});
-		showGalleryList(listForm);
+		SwitchableForm listForm = new SwitchableForm();
+		listForm.switchComponent(new PhotoGalleryListScreen(listForm, null));
 		listForm.show();
 	}
 
