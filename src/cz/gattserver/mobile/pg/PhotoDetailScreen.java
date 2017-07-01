@@ -48,7 +48,7 @@ public class PhotoDetailScreen extends SwitchableContainer {
 		photoDetailRequest.addArgument("id", String.valueOf(galleryId));
 		photoDetailRequest.addArgument("fileName", photo);
 		photoDetailRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
-		NetworkManager.getInstance().addToQueue(photoDetailRequest);
+		NetworkManager.getInstance().addToQueueAndWait(photoDetailRequest);
 	}
 
 	@Override
