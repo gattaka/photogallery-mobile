@@ -10,7 +10,6 @@ import com.codename1.io.ConnectionRequest;
 import com.codename1.io.JSONParser;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.Button;
-import com.codename1.ui.Container;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Image;
 import com.codename1.ui.Label;
@@ -35,6 +34,19 @@ public class PhotoGalleryDetailScreen extends SwitchableContainer {
 	private void init() {
 		InfiniteProgress prog = new InfiniteProgress();
 		ConnectionRequest galleryRequest = new ConnectionRequest() {
+
+			@Override
+			protected void handleErrorResponseCode(int code, String message) {
+				if (code == 404) {
+					Style s = UIManager.getInstance().getComponentStyle("Label");
+					s.setFgColor(0xff0000);
+					s.setBgTransparency(0);
+					Image warningImage = FontImage.createMaterial(FontImage.MATERIAL_WARNING, s).toImage();
+					add(new Label("Porušená gallerie", warningImage));
+				} else
+					super.handleErrorResponseCode(code, message);
+			}
+
 			protected void readResponse(java.io.InputStream input) throws IOException {
 
 				JSONParser p = new JSONParser();
@@ -45,49 +57,48 @@ public class PhotoGalleryDetailScreen extends SwitchableContainer {
 					// galleryCont.addComponent(new SpanLabel((String)
 					// result.get("author")));
 
-					@SuppressWarnings("unchecked")
-					ArrayList<String> photos = (ArrayList<String>) result.get("files");
-					if (photos != null) {
-						for (String photo : photos) {
-							InfiniteProgress prog2 = new InfiniteProgress();
-							ConnectionRequest photoMiniRequest = new ConnectionRequest() {
-								@Override
-								protected void handleErrorResponseCode(int code, String message) {
-									if (code == 404) {
-										Style s = UIManager.getInstance().getComponentStyle("Label");
-										s.setFgColor(0xff0000);
-										s.setBgTransparency(0);
-										Image warningImage = FontImage.createMaterial(FontImage.MATERIAL_WARNING, s)
-												.toImage();
-										// Container c = new
-										// Container(BoxLayout.x());
-										// c.add(warningImage);
-										// c.add(new Label(icon))
-										add(new Label("Err. loading: " + photo, warningImage));
-									} else
-										super.handleErrorResponseCode(code, message);
-								}
+					if (result.containsKey("files")) {
+						@SuppressWarnings("unchecked")
+						ArrayList<String> photos = (ArrayList<String>) result.get("files");
+						if (photos != null) {
+							for (String photo : photos) {
+								InfiniteProgress prog2 = new InfiniteProgress();
+								ConnectionRequest photoMiniRequest = new ConnectionRequest() {
+									@Override
+									protected void handleErrorResponseCode(int code, String message) {
+										if (code == 404) {
+											Style s = UIManager.getInstance().getComponentStyle("Label");
+											s.setFgColor(0xff0000);
+											s.setBgTransparency(0);
+											Image warningImage = FontImage.createMaterial(FontImage.MATERIAL_WARNING, s)
+													.toImage();
+											add(new Label("Err. loading: " + photo, warningImage));
+										} else
+											super.handleErrorResponseCode(code, message);
+									}
 
-								protected void readResponse(java.io.InputStream photoMiniInput) throws IOException {
-									Image photoMiniImage = URLImage.createImage(photoMiniInput);
-									Button photoMiniButton = new Button(photoMiniImage);
-									add(photoMiniButton);
+									protected void readResponse(java.io.InputStream photoMiniInput) throws IOException {
+										Image photoMiniImage = URLImage.createImage(photoMiniInput);
+										Button photoMiniButton = new Button(photoMiniImage);
+										add(photoMiniButton);
 
-									photoMiniButton.addActionListener(e -> {
-										mainForm.switchComponent(new PhotoDetailScreen(galleryId, photo, mainForm,
-												PhotoGalleryDetailScreen.this));
-									});
+										photoMiniButton.addActionListener(e -> {
+											mainForm.switchComponent(new PhotoDetailScreen(galleryId, photo, mainForm,
+													PhotoGalleryDetailScreen.this));
+										});
 
-								}
-							};
-							photoMiniRequest.setUrl(Config.PHOTO_MINIATURE_RESOURCE);
-							photoMiniRequest.setPost(false);
-							photoMiniRequest.addArgument("id", String.valueOf(galleryId));
-							photoMiniRequest.addArgument("fileName", photo);
-							photoMiniRequest.setDisposeOnCompletion(prog2.showInifiniteBlocking());
-							NetworkManager.getInstance().addToQueue(photoMiniRequest);
+									}
+								};
+								photoMiniRequest.setUrl(Config.PHOTO_MINIATURE_RESOURCE);
+								photoMiniRequest.setPost(false);
+								photoMiniRequest.addArgument("id", String.valueOf(galleryId));
+								photoMiniRequest.addArgument("fileName", photo);
+								photoMiniRequest.setDisposeOnCompletion(prog2.showInifiniteBlocking());
+								NetworkManager.getInstance().addToQueue(photoMiniRequest);
+							}
 						}
 					}
+
 				}
 			};
 		};

@@ -4,7 +4,6 @@ import com.codename1.ui.Command;
 import com.codename1.ui.Component;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
-import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 
@@ -43,10 +42,10 @@ public class SwitchableForm extends Form {
 		Component c = (Component) newComponent;
 		SwitchableComponent s = (SwitchableComponent) newComponent;
 		if (currentComponent != null) {
-			replace((Component) currentComponent, c, MorphTransition.create(100));
-		} else {
-			add(BorderLayout.CENTER, c);
+			removeComponent((Component) currentComponent);
 		}
+		add(BorderLayout.CENTER, c);
+		repaint();
 		currentComponent = s;
 		s.attach();
 	}
