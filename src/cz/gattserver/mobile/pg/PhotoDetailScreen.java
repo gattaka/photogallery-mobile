@@ -29,21 +29,12 @@ public class PhotoDetailScreen extends SwitchableContainer {
 		InfiniteProgress prog = new InfiniteProgress();
 		ConnectionRequest photoDetailRequest = new ConnectionRequest() {
 			protected void readResponse(java.io.InputStream input) throws IOException {
-
 				Image rawImage = URLImage.createImage(input);
-				// TODO 10 by se mìlo brát dle paddingu
-				// Image photoImage =
-				// rawImage.scaledSmallerRatio(mainForm.getWidth() - 10,
-				// mainForm.getHeight() - 10);
-				// add(photoImage);
-
-				// Zasekne celý prùbìh, pokud je photoImage "moc" velké
 				ImageViewer photoViewer = new ImageViewer(rawImage);
 				add(BorderLayout.CENTER, photoViewer);
-
 			}
 		};
-		photoDetailRequest.setUrl("http://gattserver.cz/ws/pg/photo");
+		photoDetailRequest.setUrl(Config.PHOTO_DETAIL_RESOURCE);
 		photoDetailRequest.setPost(false);
 		photoDetailRequest.addArgument("id", String.valueOf(galleryId));
 		photoDetailRequest.addArgument("fileName", photo);

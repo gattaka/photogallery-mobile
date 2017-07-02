@@ -16,10 +16,8 @@ public class PhotoGalleryListScreen extends SwitchableContainer {
 
 	public PhotoGalleryListScreen(SwitchableForm mainForm, SwitchableContainer prevScreen) {
 		super("Pøehled fotogalerií", mainForm, prevScreen);
-
 		setLayout(BoxLayout.y());
 		setScrollableY(true);
-
 		init();
 	}
 
@@ -46,7 +44,7 @@ public class PhotoGalleryListScreen extends SwitchableContainer {
 				}
 			}
 		};
-		galleryListRequest.setUrl("http://gattserver.cz/ws/pg/list");
+		galleryListRequest.setUrl(Config.GALLERY_LIST_RESOURCE);
 		galleryListRequest.setPost(false);
 		galleryListRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 		NetworkManager.getInstance().addToQueueAndWait(galleryListRequest);

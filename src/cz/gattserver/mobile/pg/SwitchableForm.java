@@ -7,7 +7,6 @@ import com.codename1.ui.Form;
 import com.codename1.ui.animations.MorphTransition;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.layouts.Layout;
 
 public class SwitchableForm extends Form {
 
