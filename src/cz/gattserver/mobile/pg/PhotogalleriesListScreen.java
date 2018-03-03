@@ -21,6 +21,9 @@ import cz.gattserver.mobile.common.SwitchableForm;
 
 public class PhotogalleriesListScreen extends SwitchableContainer {
 
+	private static final int PAGE_SIZE = 10;
+
+	private int pageCount = 0;
 	private int pageNumber = 0;
 
 	public PhotogalleriesListScreen(SwitchableForm mainForm, SwitchableContainer prevScreen) {
@@ -56,7 +59,7 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 			galleryRequest.setUrl(Config.GALLERY_LIST_RESOURCE);
 			galleryRequest.setPost(false);
 			galleryRequest.addArgument("page", String.valueOf(pageNumber++));
-			galleryRequest.addArgument("pageSize", "10");
+			galleryRequest.addArgument("pageSize", String.valueOf(PAGE_SIZE));
 			galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
@@ -72,8 +75,47 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 		}
 	}
 
+	private void fetchCount() {
+		try {
+			InfiniteProgress prog = new InfiniteProgress();
+			ConnectionRequest galleryRequest = new ConnectionRequest() {
+
+				@Override
+				protected void handleErrorResponseCode(int code, String message) {
+					switch (code) {
+					case 404:
+						ErrorHandler.showError(ErrorType.RECORD, PhotogalleriesListScreen.this);
+						break;
+					default:
+						ErrorHandler.showError(ErrorType.SERVER, PhotogalleriesListScreen.this);
+						super.handleErrorResponseCode(code, message);
+					}
+				}
+
+				protected void handleException(Exception err) {
+					if (Display.isInitialized() && !Display.getInstance().isMinimized())
+						ErrorHandler.showError(ErrorType.CONNECTION, PhotogalleriesListScreen.this);
+				}
+			};
+
+			galleryRequest.setUrl(Config.GALLERY_COUNT_RESOURCE);
+			galleryRequest.setPost(false);
+			galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
+			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
+
+			Integer count = Integer.parseInt(new String(galleryRequest.getResponseData(), "UTF-8"));
+			pageCount = (int) Math.ceil((double) count / PAGE_SIZE);
+		} catch (Exception err) {
+			Log.e(err);
+			return;
+		}
+	}
+
 	private void init() {
+		pageNumber = 0;
+
 		InfiniteScrollAdapter.createInfiniteScroll(PhotogalleriesListScreen.this, () -> {
+			fetchCount();
 			List<Map<String, String>> list = fetchPropertyData();
 			MultiButton[] cmps = new MultiButton[list.size()];
 			for (int iter = 0; iter < cmps.length; iter++) {
@@ -93,7 +135,7 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 				});
 				cmps[iter] = btn;
 			}
-			InfiniteScrollAdapter.addMoreComponents(PhotogalleriesListScreen.this, cmps, true);
+			InfiniteScrollAdapter.addMoreComponents(PhotogalleriesListScreen.this, cmps, pageNumber < pageCount);
 		}, true);
 	}
 
