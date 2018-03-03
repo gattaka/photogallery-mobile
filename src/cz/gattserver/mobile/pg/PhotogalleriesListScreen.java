@@ -23,7 +23,6 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 
 	private static final int PAGE_SIZE = 10;
 
-	private int pageCount = 0;
 	private int pageNumber = 0;
 
 	public PhotogalleriesListScreen(SwitchableForm mainForm, SwitchableContainer prevScreen) {
@@ -63,6 +62,9 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 			galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
+			if (galleryRequest.getResponseCode() != 200)
+				return null;
+
 			Map<String, Object> result = new JSONParser().parseJSON(
 					new InputStreamReader(new ByteArrayInputStream(galleryRequest.getResponseData()), "UTF-8"));
 
@@ -75,21 +77,15 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 		}
 	}
 
-	private void fetchCount() {
+	private Integer fetchCount() {
 		try {
 			InfiniteProgress prog = new InfiniteProgress();
 			ConnectionRequest galleryRequest = new ConnectionRequest() {
 
 				@Override
 				protected void handleErrorResponseCode(int code, String message) {
-					switch (code) {
-					case 404:
-						ErrorHandler.showError(ErrorType.RECORD, PhotogalleriesListScreen.this);
-						break;
-					default:
+					if (code != 200)
 						ErrorHandler.showError(ErrorType.SERVER, PhotogalleriesListScreen.this);
-						super.handleErrorResponseCode(code, message);
-					}
 				}
 
 				protected void handleException(Exception err) {
@@ -103,11 +99,14 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 			galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
+			if (galleryRequest.getResponseCode() != 200)
+				return null;
+
 			Integer count = Integer.parseInt(new String(galleryRequest.getResponseData(), "UTF-8"));
-			pageCount = (int) Math.ceil((double) count / PAGE_SIZE);
+			return (int) Math.ceil((double) count / PAGE_SIZE);
 		} catch (Exception err) {
 			Log.e(err);
-			return;
+			return null;
 		}
 	}
 
@@ -115,7 +114,9 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 		pageNumber = 0;
 
 		InfiniteScrollAdapter.createInfiniteScroll(PhotogalleriesListScreen.this, () -> {
-			fetchCount();
+			Integer pageCount = fetchCount();
+			if (pageCount == null)
+				return;
 			List<Map<String, String>> list = fetchPropertyData();
 			MultiButton[] cmps = new MultiButton[list.size()];
 			for (int iter = 0; iter < cmps.length; iter++) {

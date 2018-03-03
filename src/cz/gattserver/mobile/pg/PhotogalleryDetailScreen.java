@@ -82,7 +82,7 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 
 	private void init() {
 		pageNumber = 0;
-				
+
 		Style s = UIManager.getInstance().getComponentStyle("MultiLine1");
 		FontImage p = FontImage.createMaterial(FontImage.MATERIAL_PORTRAIT, s);
 		EncodedImage placeholder = EncodedImage.createFromImage(p.scaled(p.getWidth() * 3, p.getHeight() * 3), false);
@@ -91,6 +91,7 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 		InfiniteScrollAdapter.createInfiniteScroll(PhotogalleryDetailScreen.this, () -> {
 			int start = pageNumber * PAGE_SIZE;
 			int end = pageNumber * PAGE_SIZE + PAGE_SIZE;
+			pageNumber++;
 			boolean isMore = true;
 			if (end >= list.size()) {
 				end = list.size();
@@ -107,8 +108,13 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 				String galID = String.valueOf(galleryId);
 				String guid = "pg_" + galID + "_photo_" + photo;
 				String url = Config.PHOTO_MINIATURE_RESOURCE + "?id=" + galID + "&fileName=" + photo;
-				cmps[iter] = new MultiButton(photo);
-				cmps[iter].setIcon(URLImage.createToStorage(placeholder, guid, url));
+				MultiButton btn = new MultiButton(photo);
+				btn.addActionListener(e -> {
+					mainForm.switchComponent(
+							new PhotoDetailScreen(galleryId, photo, list, mainForm, PhotogalleryDetailScreen.this));
+				});
+				btn.setIcon(URLImage.createToStorage(placeholder, guid, url));
+				cmps[iter] = btn;
 			}
 			InfiniteScrollAdapter.addMoreComponents(PhotogalleryDetailScreen.this, cmps, isMore);
 		}, true);
