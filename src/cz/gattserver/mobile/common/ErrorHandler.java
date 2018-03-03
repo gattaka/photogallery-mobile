@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.pg;
+package cz.gattserver.mobile.common;
 
 import com.codename1.ui.Container;
 import com.codename1.ui.FontImage;

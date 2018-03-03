@@ -15,20 +15,19 @@ import com.codename1.ui.Component;
 import com.codename1.ui.Display;
 import com.codename1.ui.layouts.BoxLayout;
 
-import cz.gattserver.mobile.common.SwitchableContainer;
+import cz.gattserver.mobile.common.ErrorHandler;
+import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
+import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class PhotogalleriesListScreen extends SwitchableContainer {
+public class PhotogalleriesListScreen extends SwitchableScreen {
 
 	private static final int PAGE_SIZE = 10;
 
 	private int pageNumber = 0;
 
-	public PhotogalleriesListScreen(SwitchableForm mainForm, SwitchableContainer prevScreen) {
+	public PhotogalleriesListScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
 		super("Pøehled fotogalerií", mainForm, prevScreen);
-		setLayout(BoxLayout.y());
-		setScrollableY(true);
-		init();
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {
@@ -39,17 +38,17 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 				protected void handleErrorResponseCode(int code, String message) {
 					switch (code) {
 					case 404:
-						ErrorHandler.showError(ErrorType.RECORD, PhotogalleriesListScreen.this);
+						ErrorHandler.showError(ErrorType.RECORD, mainForm.getContentPane());
 						break;
 					default:
-						ErrorHandler.showError(ErrorType.SERVER, PhotogalleriesListScreen.this);
+						ErrorHandler.showError(ErrorType.SERVER, mainForm.getContentPane());
 						super.handleErrorResponseCode(code, message);
 					}
 				}
 
 				protected void handleException(Exception err) {
 					if (Display.isInitialized() && !Display.getInstance().isMinimized())
-						ErrorHandler.showError(ErrorType.CONNECTION, PhotogalleriesListScreen.this);
+						ErrorHandler.showError(ErrorType.CONNECTION, mainForm.getContentPane());
 				}
 			};
 
@@ -81,12 +80,12 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 				@Override
 				protected void handleErrorResponseCode(int code, String message) {
 					if (code != 200)
-						ErrorHandler.showError(ErrorType.SERVER, PhotogalleriesListScreen.this);
+						ErrorHandler.showError(ErrorType.SERVER, mainForm.getContentPane());
 				}
 
 				protected void handleException(Exception err) {
 					if (Display.isInitialized() && !Display.getInstance().isMinimized())
-						ErrorHandler.showError(ErrorType.CONNECTION, PhotogalleriesListScreen.this);
+						ErrorHandler.showError(ErrorType.CONNECTION, mainForm.getContentPane());
 				}
 			};
 
@@ -105,10 +104,13 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 		}
 	}
 
-	private void init() {
+	protected void init() {
+		mainForm.setLayout(BoxLayout.y());
+		mainForm.setScrollableY(true);
+
 		pageNumber = 0;
 
-		InfiniteScrollAdapter.createInfiniteScroll(PhotogalleriesListScreen.this, () -> {
+		InfiniteScrollAdapter.createInfiniteScroll(mainForm.getContentPane(), () -> {
 			Integer pageCount = fetchCount();
 			if (pageCount == null)
 				return;
@@ -117,7 +119,7 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 			for (int iter = 0; iter < cmps.length; iter++) {
 				Map<String, String> gallery = list.get(iter);
 				if (gallery == null) {
-					InfiniteScrollAdapter.addMoreComponents(PhotogalleriesListScreen.this, new Component[0], false);
+					InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), new Component[0], false);
 					return;
 				}
 
@@ -125,20 +127,14 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 				int galleryId = (int) Double.parseDouble(String.valueOf(gallery.get("id")));
 
 				MultiButton btn = new MultiButton(galleryNazev);
-				btn.addActionListener(e -> {
-					mainForm.switchComponent(new PhotogalleryDetailScreen(galleryId, galleryNazev, mainForm,
-							PhotogalleriesListScreen.this));
-				});
+				btn.addActionListener(e -> mainForm.switchScreen(new PhotogalleryDetailScreen(galleryId, galleryNazev,
+						mainForm, PhotogalleriesListScreen.this)));
 				cmps[iter] = btn;
 			}
-			InfiniteScrollAdapter.addMoreComponents(PhotogalleriesListScreen.this, cmps, pageNumber < pageCount);
+			InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), cmps, pageNumber < pageCount);
 		}, true);
-	}
 
-	@Override
-	public void refresh() {
-		removeAll();
-		init();
+		mainForm.revalidate();
 	}
 
 }

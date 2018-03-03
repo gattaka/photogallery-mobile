@@ -20,23 +20,24 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 
-import cz.gattserver.mobile.common.SwitchableContainer;
+import cz.gattserver.mobile.common.ErrorHandler;
+import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
+import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class PhotogalleryDetailScreen extends SwitchableContainer {
+public class PhotogalleryDetailScreen extends SwitchableScreen {
 
 	private static final int PAGE_SIZE = 10;
 
+	private SwitchableForm mainForm;
 	private int galleryId;
 	private int pageNumber = 0;
 
 	public PhotogalleryDetailScreen(int galleryId, String galleryNazev, SwitchableForm mainForm,
-			SwitchableContainer prevScreen) {
+			SwitchableScreen prevScreen) {
 		super(galleryNazev, mainForm, prevScreen);
 		this.galleryId = galleryId;
-		setLayout(BoxLayout.y());
-		setScrollableY(true);
-		init();
+		this.mainForm = mainForm;
 	}
 
 	private List<String> getGalleryItems() {
@@ -46,17 +47,17 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 			protected void handleErrorResponseCode(int code, String message) {
 				switch (code) {
 				case 404:
-					ErrorHandler.showError(ErrorType.RECORD, PhotogalleryDetailScreen.this);
+					ErrorHandler.showError(ErrorType.RECORD, mainForm.getContentPane());
 					break;
 				default:
-					ErrorHandler.showError(ErrorType.SERVER, PhotogalleryDetailScreen.this);
+					ErrorHandler.showError(ErrorType.SERVER, mainForm.getContentPane());
 					super.handleErrorResponseCode(code, message);
 				}
 			}
 
 			protected void handleException(Exception err) {
 				if (Display.isInitialized() && !Display.getInstance().isMinimized())
-					ErrorHandler.showError(ErrorType.CONNECTION, PhotogalleryDetailScreen.this);
+					ErrorHandler.showError(ErrorType.CONNECTION, mainForm.getContentPane());
 			}
 		};
 		galleryRequest.setUrl(Config.GALLERY_DETAIL_RESOURCE);
@@ -77,7 +78,10 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 		}
 	}
 
-	private void init() {
+	protected void init() {
+		mainForm.setLayout(BoxLayout.y());
+		mainForm.setScrollableY(true);
+
 		pageNumber = 0;
 
 		Style s = UIManager.getInstance().getComponentStyle("MultiLine1");
@@ -85,7 +89,7 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 		EncodedImage placeholder = EncodedImage.createFromImage(p.scaled(p.getWidth() * 3, p.getHeight() * 3), false);
 
 		List<String> list = getGalleryItems();
-		InfiniteScrollAdapter.createInfiniteScroll(PhotogalleryDetailScreen.this, () -> {
+		InfiniteScrollAdapter.createInfiniteScroll(mainForm.getContentPane(), () -> {
 			int start = pageNumber * PAGE_SIZE;
 			int end = pageNumber * PAGE_SIZE + PAGE_SIZE;
 			pageNumber++;
@@ -99,28 +103,22 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 			for (int iter = 0; iter < cmps.length; iter++) {
 				String photo = photos.get(iter);
 				if (photo == null) {
-					InfiniteScrollAdapter.addMoreComponents(PhotogalleryDetailScreen.this, new Component[0], false);
+					InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), new Component[0], false);
 					return;
 				}
 				String galID = String.valueOf(galleryId);
 				String guid = "pg_" + galID + "_photo_" + photo;
 				String url = Config.PHOTO_MINIATURE_RESOURCE + "?id=" + galID + "&fileName=" + photo;
 				MultiButton btn = new MultiButton(photo);
-				btn.addActionListener(e -> {
-					mainForm.switchComponent(
-							new PhotoDetailScreen(galleryId, photo, list, mainForm, PhotogalleryDetailScreen.this));
-				});
+				btn.addActionListener(e -> mainForm.switchScreen(
+						new PhotoDetailScreen(galleryId, photo, list, mainForm, PhotogalleryDetailScreen.this)));
 				btn.setIcon(URLImage.createToStorage(placeholder, guid, url));
 				cmps[iter] = btn;
 			}
-			InfiniteScrollAdapter.addMoreComponents(PhotogalleryDetailScreen.this, cmps, isMore);
+			InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), cmps, isMore);
 		}, true);
-	}
-
-	@Override
-	public void refresh() {
-		removeAll();
-		init();
+		
+		mainForm.revalidate();
 	}
 
 }

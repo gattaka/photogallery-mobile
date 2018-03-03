@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.pg;
+package cz.gattserver.mobile.common;
 
 public enum ErrorType {
 

@@ -3,9 +3,7 @@ package cz.gattserver.mobile.pg;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
-import com.codename1.ui.Toolbar;
 import com.codename1.ui.plaf.UIManager;
-
 import cz.gattserver.mobile.common.SwitchableForm;
 
 public class PhotogalleryMobile {
@@ -17,7 +15,7 @@ public class PhotogalleryMobile {
 		UIManager.initFirstTheme("/theme");
 
 		// Enable Toolbar on all Forms by default
-		Toolbar.setGlobalToolbar(true);
+		// Toolbar.setGlobalToolbar(true);
 	}
 
 	// pøi nastartování nebo de-minimalizaci
@@ -27,7 +25,9 @@ public class PhotogalleryMobile {
 			return;
 		}
 		SwitchableForm listForm = new SwitchableForm();
-		listForm.switchComponent(new PhotogalleriesListScreen(listForm, null));
+		PhotogalleriesListScreen screen = new PhotogalleriesListScreen(listForm, null);
+		listForm.switchScreen(screen);
+		// listForm.switchComponent(screen);
 		listForm.show();
 	}
 
