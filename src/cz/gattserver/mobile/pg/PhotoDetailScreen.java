@@ -16,10 +16,10 @@ import cz.gattserver.mobile.common.SwitchableForm;
 
 public class PhotoDetailScreen extends SwitchableContainer {
 
-	private int galleryId;
+	private long galleryId;
 	private String photo;
 
-	public PhotoDetailScreen(int galleryId, String photo, SwitchableForm mainForm, SwitchableContainer prevScreen) {
+	public PhotoDetailScreen(long galleryId, String photo, SwitchableForm mainForm, SwitchableContainer prevScreen) {
 		super(photo, mainForm, prevScreen);
 		this.galleryId = galleryId;
 		this.photo = photo;
