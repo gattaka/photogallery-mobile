@@ -34,8 +34,8 @@ public class ErrorHandler {
 			msg = "Chyba serveru";
 		}
 		Label lbl = new Label(msg, image);
-		if (cnt.getLayout() instanceof BorderLayout)
-			cnt.add(BorderLayout.CENTER, lbl);
+		if (cnt.getLayout() != null && cnt.getLayout() instanceof BorderLayout)
+			cnt.add(BorderLayout.NORTH, lbl);
 		else
 			cnt.add(lbl);
 	}
