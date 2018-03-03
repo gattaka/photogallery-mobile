@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import com.codename1.components.InfiniteProgress;
 import com.codename1.components.InfiniteScrollAdapter;
 import com.codename1.components.MultiButton;
 import com.codename1.io.ConnectionRequest;
@@ -34,7 +33,6 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 
 	private List<Map<String, String>> fetchPropertyData() {
 		try {
-			InfiniteProgress prog = new InfiniteProgress();
 			ConnectionRequest galleryRequest = new ConnectionRequest() {
 
 				@Override
@@ -59,7 +57,6 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 			galleryRequest.setPost(false);
 			galleryRequest.addArgument("page", String.valueOf(pageNumber++));
 			galleryRequest.addArgument("pageSize", String.valueOf(PAGE_SIZE));
-			galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
 			if (galleryRequest.getResponseCode() != 200)
@@ -79,7 +76,6 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 
 	private Integer fetchCount() {
 		try {
-			InfiniteProgress prog = new InfiniteProgress();
 			ConnectionRequest galleryRequest = new ConnectionRequest() {
 
 				@Override
@@ -96,7 +92,6 @@ public class PhotogalleriesListScreen extends SwitchableContainer {
 
 			galleryRequest.setUrl(Config.GALLERY_COUNT_RESOURCE);
 			galleryRequest.setPost(false);
-			galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
 			if (galleryRequest.getResponseCode() != 200)

@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import com.codename1.components.InfiniteProgress;
 import com.codename1.components.InfiniteScrollAdapter;
 import com.codename1.components.MultiButton;
 import com.codename1.io.ConnectionRequest;
@@ -41,7 +40,6 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 	}
 
 	private List<String> getGalleryItems() {
-		InfiniteProgress prog = new InfiniteProgress();
 		ConnectionRequest galleryRequest = new ConnectionRequest() {
 
 			@Override
@@ -64,7 +62,6 @@ public class PhotogalleryDetailScreen extends SwitchableContainer {
 		galleryRequest.setUrl(Config.GALLERY_DETAIL_RESOURCE);
 		galleryRequest.setPost(false);
 		galleryRequest.addArgument("id", String.valueOf(galleryId));
-		galleryRequest.setDisposeOnCompletion(prog.showInifiniteBlocking());
 		NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
 		try {
