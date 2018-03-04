@@ -8,6 +8,7 @@ import com.codename1.io.Storage;
 import com.codename1.io.Util;
 import com.codename1.ui.EncodedImage;
 import com.codename1.ui.FontImage;
+import com.codename1.ui.Form;
 import com.codename1.ui.Image;
 import com.codename1.ui.events.DataChangedListener;
 import com.codename1.ui.events.SelectionListener;
@@ -18,17 +19,25 @@ import com.codename1.ui.util.EventDispatcher;
 
 public class ImageListModel implements ListModel<Image> {
 
+	private Form mainForm;
 	private EventDispatcher listeners = new EventDispatcher();
 	private List<String> imageURLs = new ArrayList<>();
+	private List<String> photoList;
 	private EncodedImage placeholder;
 	private int selection;
 	private Image[] images;
 
-	public ImageListModel(long galleryId, String currentPhoto, List<String> photoList) {
+	private void updateTitle(int index) {
+		mainForm.setTitle((index + 1) + "/" + photoList.size() + " " + photoList.get(index));
+	}
+
+	public ImageListModel(Form mainForm, long galleryId, String currentPhoto, List<String> photoList) {
+		this.mainForm = mainForm;
+		this.photoList = photoList;
 		for (int i = 0; i < photoList.size(); i++) {
 			String p = photoList.get(i);
 			if (p.equals(currentPhoto))
-				selection = i;
+				setSelectedIndex(i);
 			String url = Config.PHOTO_DETAIL_RESOURCE + "?id=" + String.valueOf(galleryId) + "&fileName=" + p;
 			imageURLs.add(url);
 		}
@@ -71,6 +80,7 @@ public class ImageListModel implements ListModel<Image> {
 	@Override
 	public void setSelectedIndex(int index) {
 		selection = index;
+		updateTitle(index);
 	}
 
 	@Override

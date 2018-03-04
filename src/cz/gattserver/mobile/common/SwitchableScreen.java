@@ -28,4 +28,5 @@ public abstract class SwitchableScreen {
 	public SwitchableScreen getPrev() {
 		return prev;
 	}
+
 }
