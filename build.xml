@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--build_version=3.9--> 
+<!--build_version=3.8--> 
 
 <!-- IMPORTANT!!! When building for ios: if you don't supply the certificate/provisioning profile etc. you will not 
     be able to run on a regular device (only on jailbroken devices) in that case your package name MUST be: com.codename1.demos.lwuitdemo
@@ -44,7 +44,7 @@
 
     -->
 
-<project name="photogallery-mobile" basedir=".">
+<project name="CodenameOneTemplate" basedir=".">
 	<description>Builds, tests, and runs the project CodenameOne111.</description>
 	<property file="codenameone_settings.properties" />
 	<property file="build.props" />
@@ -393,9 +393,11 @@
         <mkdir dir="lib/impl/native/" />
         <mkdir dir="lib/impl/native/ios" />        		
 		<copy todir="${build.classes.dir}">
-            <fileset dir="native/ios" includes="**/*"/>
-            <fileset dir="lib/impl/native/ios" includes="**/*"/>
-        </copy>
+		    <fileset dir="lib/impl/native/ios" includes="**/*"/>
+		</copy>
+        <copy todir="${build.classes.dir}">
+			<fileset dir="native/ios" includes="**/*" />
+        </copy>        
 	</target>
 
 	<target name="copy-rim-override">

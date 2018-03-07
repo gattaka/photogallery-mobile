@@ -28,6 +28,7 @@ public class PhotoDetailScreen extends SwitchableScreen {
 
 		this.imageListModel = new ImageListModel(mainForm, galleryId, photo, photoList);
 		ImageViewer photoViewer = new ImageViewer(imageListModel.getCurrentItem());
+		photoViewer.setUIID("photoViewer");
 		photoViewer.setImageList(imageListModel);
 		mainForm.getContentPane().add(BorderLayout.CENTER, photoViewer);
 

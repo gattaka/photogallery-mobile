@@ -27,18 +27,17 @@ public class SwitchableForm extends Form {
 		// aby nebyly dva scrollbary
 		setScrollVisible(false);
 
-		Toolbar toolbar = new Toolbar();
-		setToolbar(toolbar);
-
-		// v kombinaci s donahráváním InfiniteScrollAdapter problikává
-		// toolbar.setScrollOffUponContentPane(true);
-
 		setBackCommand(new Command("back") {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				back();
 			}
 		});
+
+		Toolbar toolbar = new GrassToolbar();
+		setToolbar(toolbar);
+		// v kombinaci s donahráváním InfiniteScrollAdapter problikává
+		// toolbar.setScrollOffUponContentPane(true);
 		toolbar.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, (e) -> back());
 		toolbar.addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, (e) -> currentScreen.refresh());
 	}
