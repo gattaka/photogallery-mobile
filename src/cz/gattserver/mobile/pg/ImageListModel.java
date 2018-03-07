@@ -43,6 +43,7 @@ public class ImageListModel implements ListModel<Image> {
 		}
 		images = new EncodedImage[imageURLs.size()];
 
+		// zástupný obrázek bìhem nahrávání (refresh ikona)
 		Style s = UIManager.getInstance().getComponentStyle("MultiLine1");
 		placeholder = EncodedImage.createFromImage(FontImage.createMaterial(FontImage.MATERIAL_SYNC, s), true);
 	}
