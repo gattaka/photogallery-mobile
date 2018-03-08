@@ -25,8 +25,7 @@ public class PhotogalleryMobile {
 			return;
 		}
 		SwitchableForm listForm = new SwitchableForm();
-		PhotogalleriesListScreen screen = new PhotogalleriesListScreen(listForm, null);
-		listForm.switchScreen(screen);
+		listForm.switchScreen(new MenuScreen(listForm, null));
 		listForm.show();
 	}
 
