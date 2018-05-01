@@ -18,6 +18,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 
+import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.SwitchableForm;
 import cz.gattserver.mobile.common.SwitchableScreen;
 

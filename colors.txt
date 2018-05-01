@@ -1,0 +1,5 @@
+outer bgr d9cda6
+inner bgr f4f1e6
+font 37404E
+border b3b3b3
+orange fd8b00

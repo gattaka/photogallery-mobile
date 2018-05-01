@@ -1,50 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--build_version=3.8--> 
+<!--build_version=4.1--> 
 
-<!-- IMPORTANT!!! When building for ios: if you don't supply the certificate/provisioning profile etc. you will not 
-    be able to run on a regular device (only on jailbroken devices) in that case your package name MUST be: com.codename1.demos.lwuitdemo
-
-    Required attributes for the task:
-
-    jarFile - the application jar file resulting from the build
-
-    displayName - display name for the application in the UI
-
-    Either packageName and mainClassName or fullClassName:
-    mainClassName - the name of the main class not including the package name
-
-    packageName - the package in which the main class resides, this will also 
-    be used to classify the application. It is recommended you give this some thought since
-    package names are impossible to change later on some stores!
-
-    fullClassName - combination of packageName.mainClassName
-
-    icon - a 512x512 pixel icon in PNG format, it will be adjusted for the proper resolutions. 
-    Notice that this icon SHOULDN'T include the iphone tint effect since that effect is overlayed 
-    by the iphone build process
-
-    targetType - the device target, one of the following: iphone, android, rim, me (for j2me support), 
-    win (for Windows Phone 7 support - pending)
-
-    vendor - the vendor name
-    
-    Optional attributes for iphone development these are REQUIRED if you want to distribute an application for
-    any purpose. For details on obtaining these files please go to codenameone.com:
-    certificate - optional for the iPhone project, the p12 certificate file for signing
-    certPassword - required if the certificate is specified
-    ProvisioningProfile - if the certificate is specified a mobile_provisioning file received from Apple must be supplied too
-
-    userName - login information from codenameone.com
-
-    password - the password matching your login from codenameone.com
-
-    subtitle - iphone secondary title
-
-    version - the version number for the application as a floating point value
-
-    -->
-
-<project name="CodenameOneTemplate" basedir=".">
+<project name="GRASS Mobile" basedir=".">
 	<description>Builds, tests, and runs the project CodenameOne111.</description>
 	<property file="codenameone_settings.properties" />
 	<property file="build.props" />
@@ -142,7 +99,8 @@
 	        
 	        <javac destdir="build/tmp" compiler="modern"
 	            source="1.8"
-	            target="1.8" 
+	            target="1.8"
+	        	encoding="cp1250"
 	            bootclasspath="lib/CLDC11.jar"
 				classpath="lib/CodenameOne.jar:${build.classes.dir}:lib/impl/cls">
 	            <src path="src"/>
@@ -167,7 +125,7 @@
 	        <javac destdir="native/internal_tmp" compiler="modern"
 	            source="1.8"
 	            target="1.8"
-	            bootclasspath="lib/CLDC11.jar"
+	        	encoding="cp1250"
 				classpath="lib/CodenameOne.jar:${build.classes.dir}:lib/impl/cls:build/tmp">
 	            <src path="native/javase"/>
 	            <src path="lib/impl/native/javase"/>
@@ -308,7 +266,8 @@
             icon="${codename1.icon}"
             vendor="${codename1.vendor}"
             subtitle="${codename1.secondaryTitle}"
-
+            certificate="${codename1.desktop.mac.certificate}"
+            certPassword="${codename1.desktop.mac.certificatePassword}"
             targetType="desktop_macosx"
             />
     </target>
@@ -393,11 +352,9 @@
         <mkdir dir="lib/impl/native/" />
         <mkdir dir="lib/impl/native/ios" />        		
 		<copy todir="${build.classes.dir}">
-		    <fileset dir="lib/impl/native/ios" includes="**/*"/>
-		</copy>
-        <copy todir="${build.classes.dir}">
-			<fileset dir="native/ios" includes="**/*" />
-        </copy>        
+            <fileset dir="native/ios" includes="**/*"/>
+            <fileset dir="lib/impl/native/ios" includes="**/*"/>
+        </copy>
 	</target>
 
 	<target name="copy-rim-override">
@@ -567,6 +524,8 @@
             vendor="${codename1.vendor}"
             subtitle="${codename1.secondaryTitle}"            
             targetType="windows"
+            certificate="${codename1.windows.certificate}"
+            certPassword="${codename1.windows.certificatePassword}"
             />
     </target>
 	

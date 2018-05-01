@@ -1,16 +1,21 @@
-package cz.gattserver.mobile.pg;
+package cz.gattserver.mobile.recipes;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.codename1.components.InfiniteProgress;
 import com.codename1.components.InfiniteScrollAdapter;
 import com.codename1.components.MultiButton;
 import com.codename1.io.ConnectionRequest;
 import com.codename1.io.JSONParser;
 import com.codename1.io.Log;
 import com.codename1.io.NetworkManager;
+import com.codename1.ui.Button;
 import com.codename1.ui.Component;
 import com.codename1.ui.Display;
 import com.codename1.ui.layouts.BoxLayout;
@@ -20,15 +25,17 @@ import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
 import cz.gattserver.mobile.common.SwitchableScreen;
+import cz.gattserver.mobile.pg.PhotogalleriesListScreen;
+import cz.gattserver.mobile.pg.PhotogalleryDetailScreen;
 
-public class PhotogalleriesListScreen extends SwitchableScreen {
+public class RecipesListScreen extends SwitchableScreen {
 
 	private static final int PAGE_SIZE = 10;
 
 	private int pageNumber = 0;
 
-	public PhotogalleriesListScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
-		super("Pøehled fotogalerií", mainForm, prevScreen);
+	public RecipesListScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
+		super("Recepty", mainForm, prevScreen);
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {
@@ -53,7 +60,7 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 				}
 			};
 
-			galleryRequest.setUrl(Config.GALLERY_LIST_RESOURCE);
+			galleryRequest.setUrl(Config.RECIPES_LIST_RESOURCE);
 			galleryRequest.setPost(false);
 			galleryRequest.addArgument("page", String.valueOf(pageNumber++));
 			galleryRequest.addArgument("pageSize", String.valueOf(PAGE_SIZE));
@@ -90,7 +97,7 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 				}
 			};
 
-			galleryRequest.setUrl(Config.GALLERY_COUNT_RESOURCE);
+			galleryRequest.setUrl(Config.RECIPES_COUNT_RESOURCE);
 			galleryRequest.setPost(false);
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
@@ -128,8 +135,8 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 				int galleryId = (int) Double.parseDouble(String.valueOf(gallery.get("id")));
 
 				MultiButton btn = new MultiButton(galleryNazev);
-				btn.addActionListener(e -> mainForm.switchScreen(new PhotogalleryDetailScreen(galleryId, galleryNazev,
-						mainForm, PhotogalleriesListScreen.this)));
+				btn.addActionListener(e -> mainForm.switchScreen(new RecipeDetailScreen(galleryId, galleryNazev,
+						mainForm, RecipesListScreen.this)));
 				cmps[iter] = btn;
 			}
 			InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), cmps, pageNumber < pageCount);
@@ -137,5 +144,7 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 
 		mainForm.revalidate();
 	}
+
+
 
 }

@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.pg;
+package cz.gattserver.mobile;
 
 import com.codename1.ui.Button;
 import com.codename1.ui.FontImage;
@@ -8,13 +8,15 @@ import com.codename1.ui.plaf.UIManager;
 
 import cz.gattserver.mobile.common.SwitchableForm;
 import cz.gattserver.mobile.common.SwitchableScreen;
+import cz.gattserver.mobile.pg.PhotogalleryMenuScreen;
+import cz.gattserver.mobile.recipes.RecipesListScreen;
 
 public class MenuScreen extends SwitchableScreen {
 
 	private SwitchableForm mainForm;
 
 	public MenuScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
-		super("GRASS Photo", mainForm, prevScreen);
+		super("GRASS Mobile", mainForm, prevScreen);
 		this.mainForm = mainForm;
 	}
 
@@ -25,14 +27,14 @@ public class MenuScreen extends SwitchableScreen {
 		Style s = UIManager.getInstance().getComponentStyle("Button");
 
 		FontImage p = FontImage.createMaterial(FontImage.MATERIAL_PHOTO_ALBUM, s);
-		Button galleryBtn = new Button("Galerie", p);
+		Button galleryBtn = new Button("Fotogalerie", p);
 		galleryBtn
-				.addActionListener(e -> mainForm.switchScreen(new PhotogalleriesListScreen(mainForm, MenuScreen.this)));
+				.addActionListener(e -> mainForm.switchScreen(new PhotogalleryMenuScreen(mainForm, MenuScreen.this)));
 		mainForm.add(galleryBtn);
 
-		p = FontImage.createMaterial(FontImage.MATERIAL_CLOUD_UPLOAD, s);
-		Button uploadBtn = new Button("Upload fotek", p);
-		uploadBtn.addActionListener(e -> mainForm.switchScreen(new LocalPhotosScreen(mainForm, MenuScreen.this)));
+		p = FontImage.createMaterial(FontImage.MATERIAL_CAKE, s);
+		Button uploadBtn = new Button("Recepty", p);
+		uploadBtn.addActionListener(e -> mainForm.switchScreen(new RecipesListScreen(mainForm, MenuScreen.this)));
 		mainForm.add(uploadBtn);
 
 		mainForm.revalidate();

@@ -17,6 +17,8 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.EventDispatcher;
 
+import cz.gattserver.mobile.Config;
+
 public class ImageListModel implements ListModel<Image> {
 
 	private Form mainForm;
