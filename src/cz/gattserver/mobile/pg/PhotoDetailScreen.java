@@ -6,32 +6,33 @@ import com.codename1.components.ImageViewer;
 import com.codename1.ui.layouts.BorderLayout;
 
 import cz.gattserver.mobile.common.SwitchableForm;
-import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class PhotoDetailScreen extends SwitchableScreen {
+public class PhotoDetailScreen extends SwitchableForm {
 
 	private long galleryId;
 	private String photo;
 	private List<String> photoList;
 	private ImageListModel imageListModel;
 
-	public PhotoDetailScreen(long galleryId, String photo, List<String> photoList, SwitchableForm mainForm,
-			SwitchableScreen prevScreen) {
-		super(photo, mainForm, prevScreen);
+	public PhotoDetailScreen(long galleryId, String photo, List<String> photoList, SwitchableForm prevForm) {
+		super(photo, prevForm);
 		this.galleryId = galleryId;
 		this.photo = photo;
 		this.photoList = photoList;
 	}
 
-	protected void init() {
-		mainForm.setLayout(new BorderLayout());
+	@Override
+	public SwitchableForm init() {
+		setLayout(new BorderLayout());
 
-		this.imageListModel = new ImageListModel(mainForm, galleryId, photo, photoList);
+		this.imageListModel = new ImageListModel(this, galleryId, photo, photoList);
 		ImageViewer photoViewer = new ImageViewer(imageListModel.getCurrentItem());
 		photoViewer.setImageList(imageListModel);
-		mainForm.getContentPane().add(BorderLayout.CENTER, photoViewer);
+		add(BorderLayout.CENTER, photoViewer);
 
-		mainForm.revalidate();
+		revalidate();
+
+		return this;
 	}
 
 }

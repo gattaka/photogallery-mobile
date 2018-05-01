@@ -24,21 +24,17 @@ import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
-import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class PhotogalleryDetailScreen extends SwitchableScreen {
+public class PhotogalleryDetailScreen extends SwitchableForm {
 
 	private static final int PAGE_SIZE = 10;
 
-	private SwitchableForm mainForm;
 	private int galleryId;
 	private int pageNumber = 0;
 
-	public PhotogalleryDetailScreen(int galleryId, String galleryNazev, SwitchableForm mainForm,
-			SwitchableScreen prevScreen) {
-		super(galleryNazev, mainForm, prevScreen);
+	public PhotogalleryDetailScreen(int galleryId, String galleryNazev, SwitchableForm prevForm) {
+		super(galleryNazev, prevForm);
 		this.galleryId = galleryId;
-		this.mainForm = mainForm;
 	}
 
 	private List<String> getGalleryItems() {
@@ -48,17 +44,17 @@ public class PhotogalleryDetailScreen extends SwitchableScreen {
 			protected void handleErrorResponseCode(int code, String message) {
 				switch (code) {
 				case 404:
-					ErrorHandler.showError(ErrorType.RECORD, mainForm.getContentPane());
+					ErrorHandler.showError(ErrorType.RECORD, getContentPane());
 					break;
 				default:
-					ErrorHandler.showError(ErrorType.SERVER, mainForm.getContentPane());
+					ErrorHandler.showError(ErrorType.SERVER, getContentPane());
 					super.handleErrorResponseCode(code, message);
 				}
 			}
 
 			protected void handleException(Exception err) {
 				if (Display.isInitialized() && !Display.getInstance().isMinimized())
-					ErrorHandler.showError(ErrorType.CONNECTION, mainForm.getContentPane());
+					ErrorHandler.showError(ErrorType.CONNECTION, getContentPane());
 			}
 		};
 		galleryRequest.setUrl(Config.GALLERY_DETAIL_RESOURCE);
@@ -79,9 +75,10 @@ public class PhotogalleryDetailScreen extends SwitchableScreen {
 		}
 	}
 
-	protected void init() {
-		mainForm.setLayout(BoxLayout.y());
-		mainForm.setScrollableY(true);
+	@Override
+	public SwitchableForm init() {
+		setLayout(BoxLayout.y());
+		setScrollableY(true);
 
 		pageNumber = 0;
 
@@ -90,7 +87,7 @@ public class PhotogalleryDetailScreen extends SwitchableScreen {
 		EncodedImage placeholder = EncodedImage.createFromImage(p.scaled(p.getWidth() * 3, p.getHeight() * 3), false);
 
 		List<String> list = getGalleryItems();
-		InfiniteScrollAdapter.createInfiniteScroll(mainForm.getContentPane(), () -> {
+		InfiniteScrollAdapter.createInfiniteScroll(getContentPane(), () -> {
 			int start = pageNumber * PAGE_SIZE;
 			int end = pageNumber * PAGE_SIZE + PAGE_SIZE;
 			pageNumber++;
@@ -104,22 +101,24 @@ public class PhotogalleryDetailScreen extends SwitchableScreen {
 			for (int iter = 0; iter < cmps.length; iter++) {
 				String photo = photos.get(iter);
 				if (photo == null) {
-					InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), new Component[0], false);
+					InfiniteScrollAdapter.addMoreComponents(getContentPane(), new Component[0], false);
 					return;
 				}
 				String galID = String.valueOf(galleryId);
 				String guid = "pg_" + galID + "_photo_" + photo;
 				String url = Config.PHOTO_MINIATURE_RESOURCE + "?id=" + galID + "&fileName=" + photo;
 				MultiButton btn = new MultiButton(photo);
-				btn.addActionListener(e -> mainForm.switchScreen(
-						new PhotoDetailScreen(galleryId, photo, list, mainForm, PhotogalleryDetailScreen.this)));
+				btn.addActionListener(e -> new PhotoDetailScreen(galleryId, photo, list, PhotogalleryDetailScreen.this)
+						.init().show());
 				btn.setIcon(URLImage.createToStorage(placeholder, guid, url));
 				cmps[iter] = btn;
 			}
-			InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), cmps, isMore);
+			InfiniteScrollAdapter.addMoreComponents(getContentPane(), cmps, isMore);
 		}, true);
-		
-		mainForm.revalidate();
+
+		revalidate();
+
+		return this;
 	}
 
 }

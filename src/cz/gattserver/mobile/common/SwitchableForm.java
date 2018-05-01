@@ -7,22 +7,20 @@ import com.codename1.ui.Toolbar;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.BorderLayout;
 
-public class SwitchableForm extends Form {
+public abstract class SwitchableForm extends Form {
 
-	private SwitchableScreen currentScreen;
+	private SwitchableForm prevForm;
+	private String title;
 
-	private void back() {
-		if (currentScreen.getPrev() != null)
-			switchScreen(currentScreen.getPrev());
+	protected void back() {
+		if (prevForm != null)
+			prevForm.showBack();
 	}
 
-	public void switchScreen(SwitchableScreen screen) {
-		currentScreen = screen;
-		screen.switchScreen();
-	}
-
-	public SwitchableForm() {
+	public SwitchableForm(String title, SwitchableForm prevForm) {
 		super(new BorderLayout());
+		this.title = title;
+		this.prevForm = prevForm;
 
 		// aby nebyly dva scrollbary
 		setScrollVisible(false);
@@ -39,7 +37,20 @@ public class SwitchableForm extends Form {
 		// v kombinaci s donahráváním InfiniteScrollAdapter problikává
 		// toolbar.setScrollOffUponContentPane(true);
 		toolbar.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, (e) -> back());
-		toolbar.addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, (e) -> currentScreen.refresh());
+		toolbar.addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, (e) -> refresh());
 	}
+
+	@Override
+	public void show() {
+		super.show();
+		setTitle(title);
+	}
+
+	private void refresh() {
+		removeAll();
+		init();
+	}
+
+	public abstract SwitchableForm init();
 
 }

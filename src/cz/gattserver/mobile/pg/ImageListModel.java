@@ -33,8 +33,8 @@ public class ImageListModel implements ListModel<Image> {
 		mainForm.setTitle((index + 1) + "/" + photoList.size() + " " + photoList.get(index));
 	}
 
-	public ImageListModel(Form mainForm, long galleryId, String currentPhoto, List<String> photoList) {
-		this.mainForm = mainForm;
+	public ImageListModel(Form form, long galleryId, String currentPhoto, List<String> photoList) {
+		this.mainForm = form;
 		this.photoList = photoList;
 		for (int i = 0; i < photoList.size(); i++) {
 			String p = photoList.get(i);

@@ -19,16 +19,15 @@ import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
-import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class PhotogalleriesListScreen extends SwitchableScreen {
+public class PhotogalleriesListScreen extends SwitchableForm {
 
 	private static final int PAGE_SIZE = 10;
 
 	private int pageNumber = 0;
 
-	public PhotogalleriesListScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
-		super("Pøehled fotogalerií", mainForm, prevScreen);
+	public PhotogalleriesListScreen(SwitchableForm prevForm) {
+		super("Pøehled fotogalerií", prevForm);
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {
@@ -39,17 +38,17 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 				protected void handleErrorResponseCode(int code, String message) {
 					switch (code) {
 					case 404:
-						ErrorHandler.showError(ErrorType.RECORD, mainForm.getContentPane());
+						ErrorHandler.showError(ErrorType.RECORD, getContentPane());
 						break;
 					default:
-						ErrorHandler.showError(ErrorType.SERVER, mainForm.getContentPane());
+						ErrorHandler.showError(ErrorType.SERVER, getContentPane());
 						super.handleErrorResponseCode(code, message);
 					}
 				}
 
 				protected void handleException(Exception err) {
 					if (Display.isInitialized() && !Display.getInstance().isMinimized())
-						ErrorHandler.showError(ErrorType.CONNECTION, mainForm.getContentPane());
+						ErrorHandler.showError(ErrorType.CONNECTION, getContentPane());
 				}
 			};
 
@@ -81,12 +80,12 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 				@Override
 				protected void handleErrorResponseCode(int code, String message) {
 					if (code != 200)
-						ErrorHandler.showError(ErrorType.SERVER, mainForm.getContentPane());
+						ErrorHandler.showError(ErrorType.SERVER, getContentPane());
 				}
 
 				protected void handleException(Exception err) {
 					if (Display.isInitialized() && !Display.getInstance().isMinimized())
-						ErrorHandler.showError(ErrorType.CONNECTION, mainForm.getContentPane());
+						ErrorHandler.showError(ErrorType.CONNECTION, getContentPane());
 				}
 			};
 
@@ -105,13 +104,14 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 		}
 	}
 
-	protected void init() {
-		mainForm.setLayout(BoxLayout.y());
-		mainForm.setScrollableY(true);
+	@Override
+	public SwitchableForm init() {
+		setLayout(BoxLayout.y());
+		setScrollableY(true);
 
 		pageNumber = 0;
 
-		InfiniteScrollAdapter.createInfiniteScroll(mainForm.getContentPane(), () -> {
+		InfiniteScrollAdapter.createInfiniteScroll(getContentPane(), () -> {
 			Integer pageCount = fetchCount();
 			if (pageCount == null)
 				return;
@@ -120,7 +120,7 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 			for (int iter = 0; iter < cmps.length; iter++) {
 				Map<String, String> gallery = list.get(iter);
 				if (gallery == null) {
-					InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), new Component[0], false);
+					InfiniteScrollAdapter.addMoreComponents(getContentPane(), new Component[0], false);
 					return;
 				}
 
@@ -128,14 +128,17 @@ public class PhotogalleriesListScreen extends SwitchableScreen {
 				int galleryId = (int) Double.parseDouble(String.valueOf(gallery.get("id")));
 
 				MultiButton btn = new MultiButton(galleryNazev);
-				btn.addActionListener(e -> mainForm.switchScreen(new PhotogalleryDetailScreen(galleryId, galleryNazev,
-						mainForm, PhotogalleriesListScreen.this)));
+				btn.addActionListener(
+						e -> new PhotogalleryDetailScreen(galleryId, galleryNazev, PhotogalleriesListScreen.this).init()
+								.show());
 				cmps[iter] = btn;
 			}
-			InfiniteScrollAdapter.addMoreComponents(mainForm.getContentPane(), cmps, pageNumber < pageCount);
+			InfiniteScrollAdapter.addMoreComponents(getContentPane(), cmps, pageNumber < pageCount);
 		}, true);
 
-		mainForm.revalidate();
+		revalidate();
+
+		return this;
 	}
 
 }

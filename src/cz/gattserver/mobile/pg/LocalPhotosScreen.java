@@ -20,28 +20,27 @@ import com.codename1.ui.plaf.UIManager;
 
 import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.SwitchableForm;
-import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class LocalPhotosScreen extends SwitchableScreen {
+public class LocalPhotosScreen extends SwitchableForm {
 
 	private List<String> images = new ArrayList<>();
 	private TextField newPgName;
 	private Button saveBtn;
 
-	public LocalPhotosScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
-		super("Lokální fotky", mainForm, prevScreen);
+	public LocalPhotosScreen(SwitchableForm prevForm) {
+		super("Lokální fotky", prevForm);
 	}
 
 	@Override
-	protected void init() {
-		mainForm.setLayout(BoxLayout.y());
-		mainForm.setScrollableY(true);
+	public SwitchableForm init() {
+		setLayout(BoxLayout.y());
+		setScrollableY(true);
 
 		Style s = UIManager.getInstance().getComponentStyle("Button");
 
 		Container container = new Container(BoxLayout.y());
 		container.setScrollableY(false);
-		mainForm.add(container);
+		add(container);
 
 		FontImage icon = FontImage.createMaterial(FontImage.MATERIAL_VIDEO_LIBRARY, s);
 		Button chooseBtn = new Button("Výbìr fotek", icon);
@@ -55,8 +54,8 @@ public class LocalPhotosScreen extends SwitchableScreen {
 						images.add(file);
 						btn.setIcon(img.scaledWidth(50));
 						container.add(btn);
-						mainForm.revalidate();
-						mainForm.scrollComponentToVisible(saveBtn);
+						revalidate();
+						scrollComponentToVisible(saveBtn);
 						checkSaveButton();
 					} catch (IOException err) {
 						Log.e(err);
@@ -64,11 +63,11 @@ public class LocalPhotosScreen extends SwitchableScreen {
 				}
 			}, Display.GALLERY_IMAGE);
 		});
-		mainForm.add(chooseBtn);
+		add(chooseBtn);
 
 		newPgName = new TextField("", "Název galerie", 20, TextArea.ANY);
 		newPgName.addActionListener(e -> checkSaveButton());
-		mainForm.add("Název galerie").add(newPgName);
+		add("Název galerie").add(newPgName);
 
 		icon = FontImage.createMaterial(FontImage.MATERIAL_CLOUD_UPLOAD, s);
 		saveBtn = new Button("Uložit galerii", icon);
@@ -99,9 +98,11 @@ public class LocalPhotosScreen extends SwitchableScreen {
 			NetworkManager.getInstance().addToQueue(request);
 		});
 		saveBtn.setEnabled(false);
-		mainForm.add(saveBtn);
+		add(saveBtn);
 
-		mainForm.revalidate();
+		revalidate();
+
+		return this;
 	}
 
 	private void checkSaveButton() {

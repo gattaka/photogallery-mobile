@@ -4,7 +4,6 @@ import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
 import com.codename1.ui.Form;
 import com.codename1.ui.plaf.UIManager;
-import cz.gattserver.mobile.common.SwitchableForm;
 
 public class GrassMobile {
 
@@ -24,9 +23,7 @@ public class GrassMobile {
 			current.show();
 			return;
 		}
-		SwitchableForm listForm = new SwitchableForm();
-		listForm.switchScreen(new MenuScreen(listForm, null));
-		listForm.show();
+		new MenuScreen().init().show();
 	}
 
 	// při minimalizaci

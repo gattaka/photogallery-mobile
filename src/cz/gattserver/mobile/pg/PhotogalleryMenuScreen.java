@@ -7,35 +7,33 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 
 import cz.gattserver.mobile.common.SwitchableForm;
-import cz.gattserver.mobile.common.SwitchableScreen;
 
-public class PhotogalleryMenuScreen extends SwitchableScreen {
+public class PhotogalleryMenuScreen extends SwitchableForm {
 
-	private SwitchableForm mainForm;
-
-	public PhotogalleryMenuScreen(SwitchableForm mainForm, SwitchableScreen prevScreen) {
-		super("Fotogalerie", mainForm, prevScreen);
-		this.mainForm = mainForm;
+	public PhotogalleryMenuScreen(SwitchableForm prevForm) {
+		super("Fotogalerie", prevForm);
 	}
 
-	protected void init() {
-		mainForm.setLayout(BoxLayout.y());
-		mainForm.setScrollableY(true);
+	@Override
+	public SwitchableForm init() {
+		setLayout(BoxLayout.y());
+		setScrollableY(true);
 
 		Style s = UIManager.getInstance().getComponentStyle("Button");
 
 		FontImage p = FontImage.createMaterial(FontImage.MATERIAL_PHOTO_ALBUM, s);
 		Button galleryBtn = new Button("Galerie", p);
-		galleryBtn
-				.addActionListener(e -> mainForm.switchScreen(new PhotogalleriesListScreen(mainForm, PhotogalleryMenuScreen.this)));
-		mainForm.add(galleryBtn);
+		galleryBtn.addActionListener(e -> new PhotogalleriesListScreen(PhotogalleryMenuScreen.this).init().show());
+		add(galleryBtn);
 
 		p = FontImage.createMaterial(FontImage.MATERIAL_CLOUD_UPLOAD, s);
 		Button uploadBtn = new Button("Upload fotek", p);
-		uploadBtn.addActionListener(e -> mainForm.switchScreen(new LocalPhotosScreen(mainForm, PhotogalleryMenuScreen.this)));
-		mainForm.add(uploadBtn);
+		uploadBtn.addActionListener(e -> new LocalPhotosScreen(PhotogalleryMenuScreen.this).init().show());
+		add(uploadBtn);
 
-		mainForm.revalidate();
+		revalidate();
+
+		return this;
 	}
 
 }
