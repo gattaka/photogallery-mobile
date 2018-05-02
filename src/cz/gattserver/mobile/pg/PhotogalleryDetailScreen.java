@@ -57,7 +57,7 @@ public class PhotogalleryDetailScreen extends SwitchableForm {
 					ErrorHandler.showError(ErrorType.CONNECTION, getContentPane());
 			}
 		};
-		galleryRequest.setUrl(Config.GALLERY_DETAIL_RESOURCE);
+		galleryRequest.setUrl(Config.PG_DETAIL_RESOURCE);
 		galleryRequest.setPost(false);
 		galleryRequest.addArgument("id", String.valueOf(galleryId));
 		NetworkManager.getInstance().addToQueueAndWait(galleryRequest);

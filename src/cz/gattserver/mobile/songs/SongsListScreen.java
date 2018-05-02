@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.recipes;
+package cz.gattserver.mobile.songs;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
@@ -20,14 +20,14 @@ import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
 
-public class RecipesListScreen extends SwitchableForm {
+public class SongsListScreen extends SwitchableForm {
 
 	private static final int PAGE_SIZE = 10;
 
 	private int pageNumber = 0;
 
-	public RecipesListScreen(SwitchableForm prevForm) {
-		super("Recepty", prevForm);
+	public SongsListScreen(SwitchableForm prevForm) {
+		super("Zpìvník", prevForm);
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {
@@ -52,7 +52,7 @@ public class RecipesListScreen extends SwitchableForm {
 				}
 			};
 
-			galleryRequest.setUrl(Config.RECIPES_LIST_RESOURCE);
+			galleryRequest.setUrl(Config.SONGS_LIST_RESOURCE);
 			galleryRequest.setPost(false);
 			galleryRequest.addArgument("page", String.valueOf(pageNumber++));
 			galleryRequest.addArgument("pageSize", String.valueOf(PAGE_SIZE));
@@ -89,7 +89,7 @@ public class RecipesListScreen extends SwitchableForm {
 				}
 			};
 
-			galleryRequest.setUrl(Config.RECIPES_COUNT_RESOURCE);
+			galleryRequest.setUrl(Config.SONGS_COUNT_RESOURCE);
 			galleryRequest.setPost(false);
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 
@@ -118,17 +118,18 @@ public class RecipesListScreen extends SwitchableForm {
 			List<Map<String, String>> list = fetchPropertyData();
 			MultiButton[] cmps = new MultiButton[list.size()];
 			for (int iter = 0; iter < cmps.length; iter++) {
-				Map<String, String> recipe = list.get(iter);
-				if (recipe == null) {
+				Map<String, String> song = list.get(iter);
+				if (song == null) {
 					InfiniteScrollAdapter.addMoreComponents(getContentPane(), new Component[0], false);
 					return;
 				}
 
-				String nazev = recipe.get("name");
-				int id = (int) Double.parseDouble(String.valueOf(recipe.get("id")));
+				String nazev = song.get("name");
+				int id = (int) Double.parseDouble(String.valueOf(song.get("id")));
 
 				MultiButton btn = new MultiButton(nazev);
-				btn.addActionListener(e -> new RecipeDetailScreen(id, nazev, RecipesListScreen.this).init().show());
+				btn.addActionListener(
+						e -> new SongDetailScreen(id, nazev, SongsListScreen.this).init().show());
 				cmps[iter] = btn;
 			}
 			InfiniteScrollAdapter.addMoreComponents(getContentPane(), cmps, pageNumber < pageCount);

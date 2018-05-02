@@ -52,7 +52,7 @@ public class PhotogalleriesListScreen extends SwitchableForm {
 				}
 			};
 
-			galleryRequest.setUrl(Config.GALLERY_LIST_RESOURCE);
+			galleryRequest.setUrl(Config.PG_LIST_RESOURCE);
 			galleryRequest.setPost(false);
 			galleryRequest.addArgument("page", String.valueOf(pageNumber++));
 			galleryRequest.addArgument("pageSize", String.valueOf(PAGE_SIZE));
@@ -89,7 +89,7 @@ public class PhotogalleriesListScreen extends SwitchableForm {
 				}
 			};
 
-			galleryRequest.setUrl(Config.GALLERY_COUNT_RESOURCE);
+			galleryRequest.setUrl(Config.PG_COUNT_RESOURCE);
 			galleryRequest.setPost(false);
 			NetworkManager.getInstance().addToQueueAndWait(galleryRequest);
 

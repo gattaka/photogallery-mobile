@@ -73,7 +73,7 @@ public class LocalPhotosScreen extends SwitchableForm {
 		saveBtn = new Button("Uložit galerii", icon);
 		saveBtn.addActionListener(ev -> {
 			FilesMultipartRequest request = new FilesMultipartRequest();
-			request.setUrl(Config.GALLERY_CREATE + "?galleryName=" + newPgName.getText());
+			request.setUrl(Config.PG_CREATE + "?galleryName=" + newPgName.getText());
 			try {
 				int counter = 0;
 				for (String img : images) {

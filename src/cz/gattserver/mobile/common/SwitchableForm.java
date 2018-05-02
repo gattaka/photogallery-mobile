@@ -44,12 +44,17 @@ public abstract class SwitchableForm extends Form {
 	public void show() {
 		super.show();
 		setTitle(title);
+		if (prevForm != null)
+			prevForm.onHide();
 	}
 
 	private void refresh() {
 		removeAll();
 		init();
 	}
+
+	protected void onHide() {
+	};
 
 	public abstract SwitchableForm init();
 

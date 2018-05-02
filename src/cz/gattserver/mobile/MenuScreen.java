@@ -9,6 +9,7 @@ import com.codename1.ui.plaf.UIManager;
 import cz.gattserver.mobile.common.SwitchableForm;
 import cz.gattserver.mobile.pg.PhotogalleryMenuScreen;
 import cz.gattserver.mobile.recipes.RecipesListScreen;
+import cz.gattserver.mobile.songs.SongsListScreen;
 
 public class MenuScreen extends SwitchableForm {
 
@@ -29,9 +30,14 @@ public class MenuScreen extends SwitchableForm {
 		add(galleryBtn);
 
 		p = FontImage.createMaterial(FontImage.MATERIAL_CAKE, s);
-		Button uploadBtn = new Button("Recepty", p);
-		uploadBtn.addActionListener(e -> new RecipesListScreen(MenuScreen.this).init().show());
-		add(uploadBtn);
+		Button recipesBtn = new Button("Recepty", p);
+		recipesBtn.addActionListener(e -> new RecipesListScreen(MenuScreen.this).init().show());
+		add(recipesBtn);
+
+		p = FontImage.createMaterial(FontImage.MATERIAL_AUDIOTRACK, s);
+		Button songsBtn = new Button("Zpìvník", p);
+		songsBtn.addActionListener(e -> new SongsListScreen(MenuScreen.this).init().show());
+		add(songsBtn);
 
 		revalidate();
 
