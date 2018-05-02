@@ -15,6 +15,7 @@ public abstract class SwitchableForm extends Form {
 	protected void back() {
 		if (prevForm != null)
 			prevForm.showBack();
+		onHide();
 	}
 
 	public SwitchableForm(String title, SwitchableForm prevForm) {
