@@ -124,12 +124,15 @@ public class SongsListScreen extends SwitchableForm {
 					return;
 				}
 
-				String nazev = song.get("name");
 				int id = (int) Double.parseDouble(String.valueOf(song.get("id")));
 
-				MultiButton btn = new MultiButton(nazev);
-				btn.addActionListener(
-						e -> new SongDetailScreen(id, nazev, SongsListScreen.this).init().show());
+				String author = song.get("author");
+				String label = song.get("name");
+				if (author.length() > 0)
+					label += " (" + author + ")";
+				String detailCaption = label;
+				MultiButton btn = new MultiButton(label);
+				btn.addActionListener(e -> new SongDetailScreen(id, detailCaption, SongsListScreen.this).init().show());
 				cmps[iter] = btn;
 			}
 			InfiniteScrollAdapter.addMoreComponents(getContentPane(), cmps, pageNumber < pageCount);
