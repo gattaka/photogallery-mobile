@@ -17,7 +17,7 @@ import cz.gattserver.mobile.common.SwitchableForm;
 public class DrinksMenuScreen extends SwitchableForm {
 
 	public DrinksMenuScreen(SwitchableForm prevForm) {
-		super("N�poje", prevForm);
+		super("Nápoje", prevForm);
 	}
 
 	private String orNothing(Object obj) {
@@ -55,9 +55,9 @@ public class DrinksMenuScreen extends SwitchableForm {
 					protected void displayDetail(Map<String, Object> result) {
 						String maltType = null;
 						if ("BARLEY".equals(result.get("maltType")))
-							maltType = "Je�men";
+							maltType = "Ječmen";
 						if ("WHEAT".equals(result.get("maltType")))
-							maltType = "P�enice";
+							maltType = "Pšenice";
 						SpanLabel sl = new SpanLabel("Rating: " + ((Double) result.get("rating")).intValue() + "/5"
 								+ "\nAlkohol (%): " + orNothing(result.get("alcohol")) + "\nIBU: "
 								+ orNothing(result.get("ibu")) + "\nEPM (%): " + orNothing(result.get("degrees"))
