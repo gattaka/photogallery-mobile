@@ -36,12 +36,12 @@ public class MenuScreen extends SwitchableForm {
 		add(recipesBtn);
 
 		p = FontImage.createMaterial(FontImage.MATERIAL_AUDIOTRACK, s);
-		Button songsBtn = new Button("Zpìvník", p);
+		Button songsBtn = new Button("ZpÄ›vnÃ­k", p);
 		songsBtn.addActionListener(e -> new SongsListScreen(MenuScreen.this).init().show());
 		add(songsBtn);
 
 		p = FontImage.createMaterial(FontImage.MATERIAL_LOCAL_DRINK, s);
-		Button drinksBtn = new Button("Nápoje", p);
+		Button drinksBtn = new Button("NÃ¡poje", p);
 		drinksBtn.addActionListener(e -> new DrinksMenuScreen(MenuScreen.this).init().show());
 		add(drinksBtn);
 

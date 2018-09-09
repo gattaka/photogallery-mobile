@@ -22,11 +22,11 @@ public class ErrorHandler {
 		switch (errorType) {
 		case RECORD:
 			image = FontImage.createMaterial(FontImage.MATERIAL_WARNING, s).toImage();
-			msg = "Poruöen˝ z·znam";
+			msg = "Poru≈°en√Ω z√°znam";
 			break;
 		case CONNECTION:
 			image = FontImage.createMaterial(FontImage.MATERIAL_ERROR, s).toImage();
-			msg = "Chyba spojenÌ";
+			msg = "Chyba spojen√≠";
 			break;
 		case SERVER:
 		default:

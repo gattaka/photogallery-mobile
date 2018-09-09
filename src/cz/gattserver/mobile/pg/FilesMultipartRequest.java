@@ -15,9 +15,9 @@ import com.codename1.io.FileSystemStorage;
 import com.codename1.io.Util;
 
 /**
- * Úprava pùvodního MultipartRequest, kterı neumoòoval pod jedním "name" poslat
- * více souborù, protoe mìl vazbu 1:1. Pokud se posílá více souborù a je
- * potøeba více souborù poslat pod jedním arg-name, musí MultipartRequest mít
+ * Ãšprava pÅ¯vodnÃ­ho MultipartRequest, kterÃ½ neumoÅ¾Åˆoval pod jednÃ­m "name" poslat
+ * vÃ­ce souborÅ¯, protoÅ¾e mÄ›l vazbu 1:1. Pokud se posÃ­lÃ¡ vÃ­ce souborÅ¯ a je
+ * potÅ™eba vÃ­ce souborÅ¯ poslat pod jednÃ­m arg-name, musÃ­ MultipartRequest mÃ­t
  * vazbu 1:N
  * 
  * @author Hynek

@@ -27,7 +27,7 @@ public class PhotogalleriesListScreen extends SwitchableForm {
 	private int pageNumber = 0;
 
 	public PhotogalleriesListScreen(SwitchableForm prevForm) {
-		super("Pøehled fotogalerií", prevForm);
+		super("PÅ™ehled fotogaleriÃ­", prevForm);
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {

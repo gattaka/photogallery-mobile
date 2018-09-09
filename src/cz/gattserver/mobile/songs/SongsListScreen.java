@@ -27,7 +27,7 @@ public class SongsListScreen extends SwitchableForm {
 	private int pageNumber = 0;
 
 	public SongsListScreen(SwitchableForm prevForm) {
-		super("Zpìvník", prevForm);
+		super("ZpÄ›vnÃ­k", prevForm);
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {

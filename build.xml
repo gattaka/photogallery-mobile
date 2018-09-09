@@ -100,7 +100,7 @@
 	        <javac destdir="build/tmp" compiler="modern"
 	            source="1.8"
 	            target="1.8"
-	        	encoding="cp1250"
+	        	encoding="UTF-8"
 	            bootclasspath="lib/CLDC11.jar"
 				classpath="lib/CodenameOne.jar:${build.classes.dir}:lib/impl/cls">
 	            <src path="src"/>
@@ -125,7 +125,7 @@
 	        <javac destdir="native/internal_tmp" compiler="modern"
 	            source="1.8"
 	            target="1.8"
-	        	encoding="cp1250"
+	        	encoding="UTF-8"
 				classpath="lib/CodenameOne.jar:${build.classes.dir}:lib/impl/cls:build/tmp">
 	            <src path="native/javase"/>
 	            <src path="lib/impl/native/javase"/>

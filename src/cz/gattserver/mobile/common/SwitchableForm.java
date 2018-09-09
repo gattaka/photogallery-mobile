@@ -35,7 +35,7 @@ public abstract class SwitchableForm extends Form {
 
 		Toolbar toolbar = new GrassToolbar();
 		setToolbar(toolbar);
-		// v kombinaci s donahráváním InfiniteScrollAdapter problikává
+		// v kombinaci s donahrÃ¡vÃ¡nÃ­m InfiniteScrollAdapter problikÃ¡vÃ¡
 		// toolbar.setScrollOffUponContentPane(true);
 		toolbar.addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, (e) -> back());
 		toolbar.addMaterialCommandToRightBar("", FontImage.MATERIAL_REFRESH, (e) -> refresh());

@@ -57,9 +57,6 @@ public class SongDetailScreen extends SwitchableForm {
 				Map<String, Object> result = p.parseJSON(new InputStreamReader(input, "UTF-8"));
 
 				if (result != null) {
-					// Protože java CLDC11 nemá ve String
-					// replace podle øetìzce, ale jenom po
-					// znacích
 					String out = StringUtil.replaceAll((String) result.get("text"), "<br/>", "\n");
 					out = StringUtil.replaceAll(out, "<br>", "\n");
 					SpanLabel sl = new SpanLabel(out);

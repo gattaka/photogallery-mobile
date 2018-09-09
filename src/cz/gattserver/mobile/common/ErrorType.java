@@ -8,12 +8,12 @@ public enum ErrorType {
 	SERVER,
 
 	/**
-	 * Chyba spojenÌ
+	 * Chyba spojen√≠
 	 */
 	CONNECTION,
 
 	/**
-	 * Chyba z·znamu
+	 * Chyba z√°znamu
 	 */
 	RECORD
 
