@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.recipes;
+package cz.gattserver.mobile.drinks;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
@@ -15,22 +15,31 @@ import com.codename1.ui.Component;
 import com.codename1.ui.Display;
 import com.codename1.ui.layouts.BoxLayout;
 
-import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
 
-public class RecipesListScreen extends SwitchableForm {
+public abstract class DrinksListScreen extends SwitchableForm {
 
 	private static final int PAGE_SIZE = 10;
 
 	private int pageNumber = 0;
 
-	public RecipesListScreen(SwitchableForm prevForm) {
-		super("Recepty", prevForm);
+	public DrinksListScreen(SwitchableForm prevForm, String caption) {
+		super(caption, prevForm);
 	}
 
-	private List<Map<String, String>> fetchPropertyData() {
+	protected abstract String getListURL();
+
+	protected abstract String getCountURL();
+
+	protected abstract DrinksDetailScreen onDetail(int id, String nazev, DrinksListScreen drinksListScreen);
+
+	protected String constructDrinkLabel(Map<String, Object> drink) {
+		return ((Double) drink.get("rating")).intValue() + "/5 " + (String) drink.get("name");
+	}
+
+	private List<Map<String, Object>> fetchPropertyData() {
 		try {
 			ConnectionRequest request = new ConnectionRequest() {
 
@@ -52,7 +61,7 @@ public class RecipesListScreen extends SwitchableForm {
 				}
 			};
 
-			request.setUrl(Config.RECIPES_LIST_RESOURCE);
+			request.setUrl(getListURL());
 			request.setPost(false);
 			request.addArgument("page", String.valueOf(pageNumber++));
 			request.addArgument("pageSize", String.valueOf(PAGE_SIZE));
@@ -61,11 +70,11 @@ public class RecipesListScreen extends SwitchableForm {
 			if (request.getResponseCode() != 200)
 				return null;
 
-			Map<String, Object> result = new JSONParser().parseJSON(
-					new InputStreamReader(new ByteArrayInputStream(request.getResponseData()), "UTF-8"));
+			Map<String, Object> result = new JSONParser()
+					.parseJSON(new InputStreamReader(new ByteArrayInputStream(request.getResponseData()), "UTF-8"));
 
 			@SuppressWarnings("unchecked")
-			List<Map<String, String>> list = (List<Map<String, String>>) result.get("root");
+			List<Map<String, Object>> list = (List<Map<String, Object>>) result.get("root");
 			return list;
 		} catch (Exception err) {
 			Log.e(err);
@@ -89,7 +98,7 @@ public class RecipesListScreen extends SwitchableForm {
 				}
 			};
 
-			request.setUrl(Config.RECIPES_COUNT_RESOURCE);
+			request.setUrl(getCountURL());
 			request.setPost(false);
 			NetworkManager.getInstance().addToQueueAndWait(request);
 
@@ -115,20 +124,20 @@ public class RecipesListScreen extends SwitchableForm {
 			Integer pageCount = fetchCount();
 			if (pageCount == null)
 				return;
-			List<Map<String, String>> list = fetchPropertyData();
+			List<Map<String, Object>> list = fetchPropertyData();
 			MultiButton[] cmps = new MultiButton[list.size()];
 			for (int iter = 0; iter < cmps.length; iter++) {
-				Map<String, String> recipe = list.get(iter);
-				if (recipe == null) {
+				Map<String, Object> drink = list.get(iter);
+				if (drink == null) {
 					InfiniteScrollAdapter.addMoreComponents(getContentPane(), new Component[0], false);
 					return;
 				}
 
-				String nazev = recipe.get("name");
-				int id = (int) Double.parseDouble(String.valueOf(recipe.get("id")));
+				String nazev = constructDrinkLabel(drink);
+				int id = (int) Double.parseDouble(String.valueOf(drink.get("id")));
 
 				MultiButton btn = new MultiButton(nazev);
-				btn.addActionListener(e -> new RecipeDetailScreen(id, nazev, RecipesListScreen.this).init().show());
+				btn.addActionListener(e -> onDetail(id, nazev, DrinksListScreen.this).init().show());
 				cmps[iter] = btn;
 			}
 			InfiniteScrollAdapter.addMoreComponents(getContentPane(), cmps, pageNumber < pageCount);

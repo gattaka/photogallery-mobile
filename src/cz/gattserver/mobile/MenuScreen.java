@@ -7,6 +7,7 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 
 import cz.gattserver.mobile.common.SwitchableForm;
+import cz.gattserver.mobile.drinks.DrinksMenuScreen;
 import cz.gattserver.mobile.pg.PhotogalleryMenuScreen;
 import cz.gattserver.mobile.recipes.RecipesListScreen;
 import cz.gattserver.mobile.songs.SongsListScreen;
@@ -38,6 +39,11 @@ public class MenuScreen extends SwitchableForm {
 		Button songsBtn = new Button("Zpìvník", p);
 		songsBtn.addActionListener(e -> new SongsListScreen(MenuScreen.this).init().show());
 		add(songsBtn);
+
+		p = FontImage.createMaterial(FontImage.MATERIAL_LOCAL_DRINK, s);
+		Button drinksBtn = new Button("Nápoje", p);
+		drinksBtn.addActionListener(e -> new DrinksMenuScreen(MenuScreen.this).init().show());
+		add(drinksBtn);
 
 		revalidate();
 

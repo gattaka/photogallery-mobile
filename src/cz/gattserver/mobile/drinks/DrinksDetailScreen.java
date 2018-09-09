@@ -1,31 +1,33 @@
-package cz.gattserver.mobile.recipes;
+package cz.gattserver.mobile.drinks;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 
 import com.codename1.components.InfiniteProgress;
-import com.codename1.components.SpanLabel;
 import com.codename1.io.ConnectionRequest;
 import com.codename1.io.JSONParser;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.Display;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.util.StringUtil;
 
 import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
 
-public class RecipeDetailScreen extends SwitchableForm {
+public abstract class DrinksDetailScreen extends SwitchableForm {
 
-	private int recipeId;
+	private int id;
 
-	public RecipeDetailScreen(int recipeId, String recipeName, SwitchableForm prevForm) {
-		super(recipeName, prevForm);
-		this.recipeId = recipeId;
+	public DrinksDetailScreen(int id, String name, SwitchableForm prevForm) {
+		super(name, prevForm);
+		this.id = id;
 	}
+
+	protected abstract void displayDetail(Map<String, Object> result);
+	
+	protected abstract String getDetailURLPrefix();
 
 	@Override
 	public SwitchableForm init() {
@@ -56,21 +58,13 @@ public class RecipeDetailScreen extends SwitchableForm {
 				JSONParser p = new JSONParser();
 				Map<String, Object> result = p.parseJSON(new InputStreamReader(input, "UTF-8"));
 
-				if (result != null) {
-					// Protože java CLDC11 nemá ve String
-					// replace podle øetìzce, ale jenom po
-					// znacích
-					String out = StringUtil.replaceAll((String) result.get("description"), "<br/>", "\n");
-					out = StringUtil.replaceAll(out, "<br>", "\n");
-					SpanLabel sl = new SpanLabel(out);
-					sl.setUIID("spanlabel");
-					add(sl);
-				}
+				if (result != null)
+					displayDetail(result);
 			};
 		};
-		request.setUrl(Config.RECIPE_DETAIL_RESOURCE);
+		request.setUrl(getDetailURLPrefix());
 		request.setPost(false);
-		request.addArgument("id", String.valueOf(recipeId));
+		request.addArgument("id", String.valueOf(id));
 		request.setDisposeOnCompletion(prog.showInifiniteBlocking());
 		NetworkManager.getInstance().addToQueueAndWait(request);
 
