@@ -2,8 +2,8 @@ package cz.gattserver.mobile;
 
 public class Config {
 
-	// public static final String SERVER_ROOT = "http://gattserver.cz";
-	public static final String SERVER_ROOT = "http://localhost:8180/web";
+	public static final String SERVER_ROOT = "http://gattserver.cz";
+	// public static final String SERVER_ROOT = "http://localhost:8180/web";
 
 	public static final String PG_ROOT = SERVER_ROOT + "/ws/pg";
 	public static final String PG_CREATE = PG_ROOT + "/create";
