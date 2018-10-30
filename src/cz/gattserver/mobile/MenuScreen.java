@@ -6,6 +6,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
 
+import cz.gattserver.mobile.campgames.CampgamesListScreen;
 import cz.gattserver.mobile.common.SwitchableForm;
 import cz.gattserver.mobile.drinks.DrinksMenuScreen;
 import cz.gattserver.mobile.pg.PhotogalleryMenuScreen;
@@ -44,6 +45,11 @@ public class MenuScreen extends SwitchableForm {
 		Button drinksBtn = new Button("Nápoje", p);
 		drinksBtn.addActionListener(e -> new DrinksMenuScreen(MenuScreen.this).init().show());
 		add(drinksBtn);
+		
+		p = FontImage.createMaterial(FontImage.MATERIAL_CASINO, s);
+		Button campGamesBtn = new Button("Táborové hry", p);
+		campGamesBtn.addActionListener(e -> new CampgamesListScreen(MenuScreen.this).init().show());
+		add(campGamesBtn);
 
 		revalidate();
 

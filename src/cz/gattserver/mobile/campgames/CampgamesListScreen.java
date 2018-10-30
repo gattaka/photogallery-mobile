@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.songs;
+package cz.gattserver.mobile.campgames;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
@@ -20,14 +20,14 @@ import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
 
-public class SongsListScreen extends SwitchableForm {
+public class CampgamesListScreen extends SwitchableForm {
 
 	private static final int PAGE_SIZE = 10;
 
 	private int pageNumber = 0;
 
-	public SongsListScreen(SwitchableForm prevForm) {
-		super("Zpěvník", prevForm);
+	public CampgamesListScreen(SwitchableForm prevForm) {
+		super("Táborové hry", prevForm);
 	}
 
 	private List<Map<String, String>> fetchPropertyData() {
@@ -52,7 +52,7 @@ public class SongsListScreen extends SwitchableForm {
 				}
 			};
 
-			request.setUrl(Config.SONGS_LIST_RESOURCE);
+			request.setUrl(Config.CAMPGAMES_LIST_RESOURCE);
 			request.setPost(false);
 			request.addArgument("page", String.valueOf(pageNumber++));
 			request.addArgument("pageSize", String.valueOf(PAGE_SIZE));
@@ -61,8 +61,8 @@ public class SongsListScreen extends SwitchableForm {
 			if (request.getResponseCode() != 200)
 				return null;
 
-			Map<String, Object> result = new JSONParser().parseJSON(
-					new InputStreamReader(new ByteArrayInputStream(request.getResponseData()), "UTF-8"));
+			Map<String, Object> result = new JSONParser()
+					.parseJSON(new InputStreamReader(new ByteArrayInputStream(request.getResponseData()), "UTF-8"));
 
 			@SuppressWarnings("unchecked")
 			List<Map<String, String>> list = (List<Map<String, String>>) result.get("root");
@@ -89,7 +89,7 @@ public class SongsListScreen extends SwitchableForm {
 				}
 			};
 
-			request.setUrl(Config.SONGS_COUNT_RESOURCE);
+			request.setUrl(Config.CAMPGAMES_COUNT_RESOURCE);
 			request.setPost(false);
 			NetworkManager.getInstance().addToQueueAndWait(request);
 
@@ -118,21 +118,18 @@ public class SongsListScreen extends SwitchableForm {
 			List<Map<String, String>> list = fetchPropertyData();
 			MultiButton[] cmps = new MultiButton[list.size()];
 			for (int iter = 0; iter < cmps.length; iter++) {
-				Map<String, String> song = list.get(iter);
-				if (song == null) {
+				Map<String, String> campgame = list.get(iter);
+				if (campgame == null) {
 					InfiniteScrollAdapter.addMoreComponents(getContentPane(), new Component[0], false);
 					return;
 				}
 
-				int id = (int) Double.parseDouble(String.valueOf(song.get("id")));
+				int id = (int) Double.parseDouble(String.valueOf(campgame.get("id")));
 
-				String author = song.get("author");
-				String label = song.get("name");
-				if (author.length() > 0)
-					label += " (" + author + ")";
-				String detailCaption = label;
+				String label = campgame.get("name");
 				MultiButton btn = new MultiButton(label);
-				btn.addActionListener(e -> new SongDetailScreen(id, detailCaption, SongsListScreen.this).init().show());
+				btn.addActionListener(
+						e -> new CampgamesDetailScreen(id, label, CampgamesListScreen.this).init().show());
 				cmps[iter] = btn;
 			}
 			InfiniteScrollAdapter.addMoreComponents(getContentPane(), cmps, pageNumber < pageCount);

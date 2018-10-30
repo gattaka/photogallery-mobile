@@ -2,8 +2,8 @@ package cz.gattserver.mobile;
 
 public class Config {
 
-	public static final String SERVER_ROOT = "http://gattserver.cz";
-	// public static final String SERVER_ROOT = "http://localhost:8180/web";
+	// public static final String SERVER_ROOT = "http://gattserver.cz";
+	public static final String SERVER_ROOT = "http://localhost:8180/web";
 
 	public static final String PG_ROOT = SERVER_ROOT + "/ws/pg";
 	public static final String PG_CREATE = PG_ROOT + "/create";
@@ -22,6 +22,11 @@ public class Config {
 	public static final String SONGS_LIST_RESOURCE = SONGS_ROOT + "/list";
 	public static final String SONGS_COUNT_RESOURCE = SONGS_ROOT + "/count";
 	public static final String SONG_DETAIL_RESOURCE = SONGS_ROOT + "/song";
+	
+	public static final String CAMPGAMES_ROOT = SERVER_ROOT + "/ws/campgames";
+	public static final String CAMPGAMES_LIST_RESOURCE = CAMPGAMES_ROOT + "/list";
+	public static final String CAMPGAMES_COUNT_RESOURCE = CAMPGAMES_ROOT + "/count";
+	public static final String CAMPGAMES_DETAIL_RESOURCE = CAMPGAMES_ROOT + "/campgame";
 
 	public static final String DRINKS_ROOT = SERVER_ROOT + "/ws/drinks";
 	public static final String DRINKS_BEER_LIST_RESOURCE = DRINKS_ROOT + "/beer-list";

@@ -11,7 +11,6 @@ import com.codename1.io.NetworkManager;
 import com.codename1.ui.Display;
 import com.codename1.ui.layouts.BoxLayout;
 
-import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
@@ -26,7 +25,7 @@ public abstract class DrinksDetailScreen extends SwitchableForm {
 	}
 
 	protected abstract void displayDetail(Map<String, Object> result);
-	
+
 	protected abstract String getDetailURLPrefix();
 
 	@Override
@@ -65,7 +64,7 @@ public abstract class DrinksDetailScreen extends SwitchableForm {
 		request.setUrl(getDetailURLPrefix());
 		request.setPost(false);
 		request.addArgument("id", String.valueOf(id));
-		request.setDisposeOnCompletion(prog.showInifiniteBlocking());
+		request.setDisposeOnCompletion(prog.showInfiniteBlocking());
 		NetworkManager.getInstance().addToQueueAndWait(request);
 
 		return this;

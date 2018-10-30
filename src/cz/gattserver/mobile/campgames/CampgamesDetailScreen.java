@@ -1,4 +1,4 @@
-package cz.gattserver.mobile.songs;
+package cz.gattserver.mobile.campgames;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,20 +11,19 @@ import com.codename1.io.JSONParser;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.Display;
 import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.util.StringUtil;
 
 import cz.gattserver.mobile.Config;
 import cz.gattserver.mobile.common.ErrorHandler;
 import cz.gattserver.mobile.common.ErrorType;
 import cz.gattserver.mobile.common.SwitchableForm;
 
-public class SongDetailScreen extends SwitchableForm {
+public class CampgamesDetailScreen extends SwitchableForm {
 
-	private int songId;
+	private int campgameId;
 
-	public SongDetailScreen(int id, String songName, SwitchableForm prevForm) {
+	public CampgamesDetailScreen(int id, String songName, SwitchableForm prevForm) {
 		super(songName, prevForm);
-		this.songId = id;
+		this.campgameId = id;
 	}
 
 	@Override
@@ -57,35 +56,18 @@ public class SongDetailScreen extends SwitchableForm {
 				Map<String, Object> result = p.parseJSON(new InputStreamReader(input, "UTF-8"));
 
 				if (result != null) {
-					String out = StringUtil.replaceAll((String) result.get("text"), "<br/>", "\n");
-					out = StringUtil.replaceAll(out, "<br>", "\n");
-					SpanLabel sl = new SpanLabel(out);
-					sl.setTextUIID("songtext");
+					SpanLabel sl = new SpanLabel((String) result.get("description"));
 					add(sl);
 				}
 			};
 		};
-		request.setUrl(Config.SONG_DETAIL_RESOURCE);
+		request.setUrl(Config.CAMPGAMES_DETAIL_RESOURCE);
 		request.setPost(false);
-		request.addArgument("id", String.valueOf(songId));
+		request.addArgument("id", String.valueOf(campgameId));
 		request.setDisposeOnCompletion(prog.showInfiniteBlocking());
 		NetworkManager.getInstance().addToQueueAndWait(request);
 
 		return this;
-	}
-
-	@Override
-	public void show() {
-		super.show();
-		if (Display.getInstance().isScreenSaverDisableSupported())
-			Display.getInstance().setScreenSaverEnabled(false);
-	}
-
-	@Override
-	protected void onHide() {
-		super.onHide();
-		if (Display.getInstance().isScreenSaverDisableSupported())
-			Display.getInstance().setScreenSaverEnabled(true);
 	}
 
 }

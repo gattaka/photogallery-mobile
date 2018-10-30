@@ -68,7 +68,7 @@ public class RecipeDetailScreen extends SwitchableForm {
 		request.setUrl(Config.RECIPE_DETAIL_RESOURCE);
 		request.setPost(false);
 		request.addArgument("id", String.valueOf(recipeId));
-		request.setDisposeOnCompletion(prog.showInifiniteBlocking());
+		request.setDisposeOnCompletion(prog.showInfiniteBlocking());
 		NetworkManager.getInstance().addToQueueAndWait(request);
 
 		return this;
