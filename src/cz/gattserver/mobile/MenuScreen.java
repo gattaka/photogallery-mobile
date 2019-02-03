@@ -11,6 +11,7 @@ import cz.gattserver.mobile.common.SwitchableForm;
 import cz.gattserver.mobile.drinks.DrinksMenuScreen;
 import cz.gattserver.mobile.pg.PhotogalleryMenuScreen;
 import cz.gattserver.mobile.recipes.RecipesListScreen;
+import cz.gattserver.mobile.sms.SMSScreen;
 import cz.gattserver.mobile.songs.SongsListScreen;
 
 public class MenuScreen extends SwitchableForm {
@@ -45,11 +46,16 @@ public class MenuScreen extends SwitchableForm {
 		Button drinksBtn = new Button("Nápoje", p);
 		drinksBtn.addActionListener(e -> new DrinksMenuScreen(MenuScreen.this).init().show());
 		add(drinksBtn);
-		
+
 		p = FontImage.createMaterial(FontImage.MATERIAL_CASINO, s);
 		Button campGamesBtn = new Button("Táborové hry", p);
 		campGamesBtn.addActionListener(e -> new CampgamesListScreen(MenuScreen.this).init().show());
 		add(campGamesBtn);
+
+		p = FontImage.createMaterial(FontImage.MATERIAL_TEXTSMS, s);
+		Button smsBtn = new Button("SMS", p);
+		smsBtn.addActionListener(e -> new SMSScreen(MenuScreen.this).init().show());
+		add(smsBtn);
 
 		revalidate();
 

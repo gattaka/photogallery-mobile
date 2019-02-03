@@ -28,7 +28,7 @@ public class LocalPhotosScreen extends SwitchableForm {
 	private Button saveBtn;
 
 	public LocalPhotosScreen(SwitchableForm prevForm) {
-		super("Lok�ln� fotky", prevForm);
+		super("Lokální fotky", prevForm);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class LocalPhotosScreen extends SwitchableForm {
 		add(container);
 
 		FontImage icon = FontImage.createMaterial(FontImage.MATERIAL_VIDEO_LIBRARY, s);
-		Button chooseBtn = new Button("V�b�r fotek", icon);
+		Button chooseBtn = new Button("Výběr fotek", icon);
 		chooseBtn.addActionListener(ev -> {
 			Display.getInstance().openGallery((e) -> {
 				if (e != null && e.getSource() != null) {
@@ -67,7 +67,7 @@ public class LocalPhotosScreen extends SwitchableForm {
 
 		newPgName = new TextField("", "Název galerie", 20, TextArea.ANY);
 		newPgName.addActionListener(e -> checkSaveButton());
-		add("N�zev galerie").add(newPgName);
+		add("Název galerie").add(newPgName);
 
 		icon = FontImage.createMaterial(FontImage.MATERIAL_CLOUD_UPLOAD, s);
 		saveBtn = new Button("Uložit galerii", icon);
